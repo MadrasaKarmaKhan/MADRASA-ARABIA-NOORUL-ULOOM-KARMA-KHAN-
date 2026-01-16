@@ -3,44 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Madarsa Result Card</title>
+    <title>Noorul Uloom Result Portal</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        body { font-family: sans-serif; text-align: center; background-color: #f0f0f0; margin: 0; padding: 20px; }
-        .card { background: white; padding: 20px; border-radius: 10px; max-width: 600px; margin: auto; border: 2px solid #1e5631; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        h1 { color: #1e5631; }
-        .search-section { margin-bottom: 20px; padding: 20px; background: #e8f5e9; border-radius: 8px; }
-        input { padding: 10px; width: 70%; border: 1px solid #ccc; border-radius: 4px; }
-        button { padding: 10px 20px; background: #1e5631; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px; }
+        body { margin:0; padding:10px; font-family: sans-serif; background: #f0f0f0; }
+        /* Search Box Design */
+        #searchBox { max-width: 400px; margin: 50px auto; background: white; padding: 30px; border-radius: 15px; border: 3px solid #1e5631; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        input { width: 90%; padding: 12px; margin: 10px 0; border: 1.5px solid #1e5631; border-radius: 8px; font-size: 16px; }
+        .btn-search { background: #1e5631; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
+        
+        /* Result Card Design (Aapka Purana Style) */
+        #card { display: none; width:950px; margin:20px auto; background: white; border-radius:16px; padding:25px; border:5px solid #1e5631; position: relative; box-shadow:0 10px 20px rgba(0,0,0,0.3); transform: scale(0.4); transform-origin: top center; }
+        @media (min-width: 1000px) { #card { transform: scale(1); } }
+        
+        #topSpace { height:200px; margin-bottom:40px; background: linear-gradient(90deg, #fdfbf7, #fffdd0, #fdfbf7); border-radius: 12px; border-bottom: 2px solid #a5d6a7; text-align: center; padding: 20px; }
+        .header-title { font-size:28px; font-weight: 800; color:#1b5e20; }
+        table { width:100%; border-collapse:collapse; margin-top:20px; border: 2px solid #1e5631; }
+        th, td { border:1.5px solid #1e5631; padding:8px; text-align:center; font-size:18px; }
+        th { background: #FFFDD0; }
+        .btn-print { background: #c0392b; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1>MADARSA ARABIA NOORUL ULOOM</h1>
-        <div class="search-section">
-            <h3>Check Result 2026</h3>
-            <input type="text" id="rollNo" placeholder="Enter Roll Number">
-            <br>
-            <button onclick="showResult()">View Result</button>
-        </div>
-        <div id="resultDisplay" style="display:none; text-align: left; padding: 10px; border-top: 1px solid #ddd;">
-            <p><strong>Name:</strong> <span id="sName"></span></p>
-            <p><strong>Roll No:</strong> <span id="sRoll"></span></p>
-            <p><strong>Status:</strong> <span id="sStatus" style="font-weight:bold; color: green;">PASS</span></p>
-        </div>
+
+<div id="searchBox">
+    <h2 style="color: #1e5631;">Noorul Uloom Result 2026</h2>
+    <p>Apna Roll Number niche bharein:</p>
+    <input type="text" id="rollInput" placeholder="Enter Roll No (e.g. 101)">
+    <button class="btn-search" onclick="findResult()">RESULT DEKHEIN</button>
+</div>
+
+<div id="card">
+    <div id="topSpace">
+        <div class="header-title">MADARSA ARABIA NOORUL ULOOM</div>
+        <div style="font-size:18px; color:#1b5e20;">Karma Khan, Sant Kabir Nagar (U.P.)</div>
+        <div style="font-size:22px; margin-top:15px; background: #FFFDD0; display: inline-block; padding: 5px 20px; border-radius: 20px; border: 1px solid #1e5631;">Yearly Report Card - 2026</div>
     </div>
 
-    <script>
-        function showResult() {
-            var roll = document.getElementById('rollNo').value;
-            if(roll === "") {
-                alert("Please enter a Roll Number");
-                return;
-            }
-            // Demo data
-            document.getElementById('sName').innerText = "Student Name Here";
-            document.getElementById('sRoll').innerText = roll;
-            document.getElementById('resultDisplay').style.display = "block";
+    <div style="text-align: left; margin-bottom: 20px; font-size: 18px; line-height: 1.8;">
+        <strong>Student Name:</strong> <span id="resName"></span><br>
+        <strong>Father Name:</strong> <span id="resFather"></span><br>
+        <strong>Roll No:</strong> <span id="resRoll"></span> | <strong>Class:</strong> <span id="resClass"></span>
+    </div>
+
+    <table>
+        <thead><tr><th>Subject</th><th>Max Marks</th><th>Marks Obtained</th></tr></thead>
+        <tbody id="marksBody"></tbody>
+        <tfoot>
+            <tr style="background:#f9fff9"><th>Total</th><th>1000</th><th id="resTotal"></th></tr>
+        </tfoot>
+    </table>
+    
+    <div style="margin-top: 30px; font-weight: bold; font-size: 20px; color: #1e5631;">
+        RESULT: <span id="resStatus"></span>
+    </div>
+
+    <button class="btn-print" onclick="window.location.reload()">Back to Search</button>
+</div>
+
+<script>
+    // --- Yahan Bachchon ka Data bharein ---
+    const studentsData = {
+        "101": { name: "Zaid Khan", father: "Ahmed Khan", class: "5th", marks: [85, 70, 90, 88, 76, 80, 82, 85, 90, 95], total: 841, status: "PASS ✓" },
+        "102": { name: "Sana Khatoon", father: "Mohd. Ali", class: "4th", marks: [90, 85, 95, 88, 80, 82, 88, 90, 92, 98], total: 898, status: "PASS ✓" },
+        "103": { name: "Umar Farooq", father: "Ibrahim", class: "6th", marks: [40, 35, 30, 45, 32, 40, 38, 35, 42, 50], total: 387, status: "FAIL ✗" }
+    };
+
+    function findResult() {
+        const roll = document.getElementById("rollInput").value;
+        const student = studentsData[roll];
+
+        if (student) {
+            document.getElementById("searchBox").style.display = "none";
+            document.getElementById("card").style.display = "block";
+
+            // Data bharna
+            document.getElementById("resName").innerText = student.name;
+            document.getElementById("resFather").innerText = student.father;
+            document.getElementById("resRoll").innerText = roll;
+            document.getElementById("resClass").innerText = student.class;
+            document.getElementById("resTotal").innerText = student.total;
+            document.getElementById("resStatus").innerText = student.status;
+
+            const subjects = ["Quran","Hifz","Deeniyat","Urdu","English","Hindi","Science","Social Science","Math","Dua & Kalma"];
+            let html = "";
+            subjects.forEach((s, i) => {
+                html += `<tr><td>${s}</td><td>100</td><td>${student.marks[i]}</td></tr>`;
+            });
+            document.getElementById("marksBody").innerHTML = html;
+        } else {
+            alert("Roll Number nahi mila! Kripya sahi roll no bharein.");
         }
-    </script>
+    }
+</script>
 </body>
 </html>

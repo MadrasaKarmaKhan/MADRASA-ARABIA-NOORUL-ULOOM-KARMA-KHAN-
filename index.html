@@ -3,143 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Noorul Uloom Result Portal</title>
+    <title>Noorul Uloom Digital Dashboard</title>
     <style>
-        body { margin:0; padding:10px; font-family: sans-serif; background: #f0f0f0; }
-        /* Search Box Design */
-        #searchBox { max-width: 450px; margin: 30px auto; background: white; padding: 25px; border-radius: 15px; border: 3px solid #1e5631; box-shadow: 0 10px 20px rgba(0,0,0,0.2); text-align: left; }
-        .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: #1e5631; }
-        input, select { width: 95%; padding: 10px; border: 1.5px solid #1e5631; border-radius: 8px; font-size: 16px; }
-        .btn-search { background: #1e5631; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; font-size: 18px; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; margin: 0; padding: 20px; text-align: center; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        h1 { color: #1e5631; }
         
-        /* Result Card Style */
-        #card { display: none; width:950px; margin:20px auto; background: white; border-radius:16px; padding:25px; border:5px solid #1e5631; position: relative; box-shadow:0 10px 20px rgba(0,0,0,0.3); transform: scale(0.4); transform-origin: top center; }
-        @media (min-width: 1000px) { #card { transform: scale(1); } }
+        /* Tabs and Buttons Style */
+        .class-section { margin: 20px 0; padding: 15px; border: 2px solid #e0e0e0; border-radius: 10px; }
+        .class-title { font-size: 22px; font-weight: bold; color: #1e5631; margin-bottom: 10px; }
+        .year-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+        .btn-year { padding: 10px 15px; background: #ffffff; border: 2px solid #1e5631; color: #1e5631; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-year:hover { background: #1e5631; color: white; }
         
-        #topSpace { height:180px; margin-bottom:40px; background: linear-gradient(90deg, #fdfbf7, #fffdd0, #fdfbf7); border-radius: 12px; border-bottom: 2px solid #a5d6a7; text-align: center; padding: 20px; }
-        table { width:100%; border-collapse:collapse; margin-top:20px; border: 2px solid #1e5631; }
-        th, td { border:1.5px solid #1e5631; padding:8px; text-align:center; font-size:18px; }
-        th { background: #FFFDD0; }
-        .btn-back { background: #c0392b; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 20px; }
+        /* Modal for Search */
+        #searchModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 100; }
+        .modal-content { background: white; width: 90%; max-width: 400px; margin: 100px auto; padding: 25px; border-radius: 10px; position: relative; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        .btn-check { background: #1e5631; color: white; border: none; padding: 12px; width: 100%; border-radius: 5px; cursor: pointer; font-size: 16px; }
     </style>
 </head>
 <body>
 
-<div id="searchBox">
-    <h2 style="text-align:center; color: #1e5631; margin-top:0;">Student Login</h2>
-    
-    <div class="input-group">
-        <label>Full Name:</label>
-        <input type="text" id="inputName" placeholder="Enter Student Name">
+<div class="container" id="dashboard">
+    <h1>Madarsa Noorul Uloom Dashboard</h1>
+    <p>Apni Class aur Saal (Year) chuniye:</p>
+
+    <div class="class-section">
+        <div class="class-title">LKG Result Check</div>
+        <div class="year-buttons">
+            <button class="btn-year" onclick="openSearch('LKG', '2021')">2021</button>
+            <button class="btn-year" onclick="openSearch('LKG', '2022')">2022</button>
+            <button class="btn-year" onclick="openSearch('LKG', '2023')">2023</button>
+            <button class="btn-year" onclick="openSearch('LKG', '2024')">2024</button>
+            <button class="btn-year" onclick="openSearch('LKG', '2025')">2025</button>
+            <button class="btn-year" onclick="openSearch('LKG', '2026')">2026</button>
+        </div>
     </div>
 
-    <div class="input-group">
-        <label>Date of Birth:</label>
-        <input type="date" id="inputDOB">
+    <div class="class-section">
+        <div class="class-title">UKG Result Check</div>
+        <div class="year-buttons">
+            <button class="btn-year" onclick="openSearch('UKG', '2021')">2021</button>
+            <button class="btn-year" onclick="openSearch('UKG', '2022')">2022</button>
+            <button class="btn-year" onclick="openSearch('UKG', '2023')">2023</button>
+            <button class="btn-year" onclick="openSearch('UKG', '2024')">2024</button>
+            <button class="btn-year" onclick="openSearch('UKG', '2025')">2025</button>
+            <button class="btn-year" onclick="openSearch('UKG', '2026')">2026</button>
+        </div>
     </div>
 
-    <div class="input-group">
-        <label>Class:</label>
-        <select id="inputClass">
-            <option value="">Select Class</option>
-            <option value="1st">1st</option>
-            <option value="2nd">2nd</option>
-            <option value="3rd">3rd</option>
-            <option value="4th">4th</option>
-            <option value="5th">5th</option>
-        </select>
+    <div class="class-section">
+        <div class="class-title">Class 1 Result Check</div>
+        <div class="year-buttons">
+            <button class="btn-year" onclick="openSearch('1st', '2021')">2021</button>
+            <button class="btn-year" onclick="openSearch('1st', '2022')">2022</button>
+            <button class="btn-year" onclick="openSearch('1st', '2023')">2023</button>
+            <button class="btn-year" onclick="openSearch('1st', '2024')">2024</button>
+            <button class="btn-year" onclick="openSearch('1st', '2025')">2025</button>
+            <button class="btn-year" onclick="openSearch('1st', '2026')">2026</button>
+        </div>
     </div>
-
-    <div class="input-group">
-        <label>Passing Year:</label>
-        <input type="number" id="inputYear" placeholder="e.g. 2026">
-    </div>
-
-    <button class="btn-search" onclick="checkFullResult()">VIEW RESULT</button>
 </div>
 
-<div id="card">
-    <div id="topSpace">
-        <div style="font-size:28px; font-weight:800; color:#1b5e20;">MADARSA ARABIA NOORUL ULOOM</div>
-        <div style="font-size:18px; color:#1b5e20;">Karma Khan, Sant Kabir Nagar (U.P.)</div>
-        <div style="font-size:22px; margin-top:10px; background: #FFFDD0; display: inline-block; padding: 5px 20px; border-radius: 20px; border: 1px solid #1e5631;">Student Marksheet</div>
+<div id="searchModal">
+    <div class="modal-content">
+        <h3 id="modalTitle">Check Result</h3>
+        <input type="text" id="studentName" placeholder="Student Name">
+        <input type="date" id="studentDOB">
+        <button class="btn-check" onclick="verifyResult()">Result Dekhein</button>
+        <button onclick="closeSearch()" style="margin-top:10px; background:none; border:none; color:red; cursor:pointer;">Cancel</button>
     </div>
-
-    <div style="text-align: left; margin-bottom: 20px; font-size: 18px;">
-        <strong>Student Name:</strong> <span id="resNameDisplay"></span><br>
-        <strong>D.O.B:</strong> <span id="resDOBDisplay"></span><br>
-        <strong>Class:</strong> <span id="resClassDisplay"></span> | <strong>Year:</strong> <span id="resYearDisplay"></span>
-    </div>
-
-    <table>
-        <thead><tr><th>Subject</th><th>Total Marks</th><th>Obtained</th></tr></thead>
-        <tbody id="marksTable"></tbody>
-    </table>
-    
-    <div style="margin-top:20px; font-size:22px; font-weight:bold; color:#1b5e20;">
-        Final Status: <span id="resStatusDisplay"></span>
-    </div>
-
-    <button class="btn-back" onclick="location.reload()">New Search</button>
 </div>
 
 <script>
-    // Bachchon ka data yahan add karein (Database)
-    const database = [
-        { 
-            name: "Zaid Khan", 
-            dob: "2015-05-15", 
-            class: "5th", 
-            year: "2026", 
-            marks: [80, 85, 90, 75, 88, 70, 82, 78, 85, 90], 
-            status: "PASS" 
-        },
-        { 
-            name: "Sana Khatoon", 
-            dob: "2016-01-20", 
-            class: "4th", 
-            year: "2026", 
-            marks: [90, 92, 95, 88, 85, 90, 93, 89, 94, 98], 
-            status: "PASS" 
-        }
-    ];
+    let currentClass = "";
+    let currentYear = "";
 
-    function checkFullResult() {
-        const name = document.getElementById("inputName").value.trim();
-        const dob = document.getElementById("inputDOB").value;
-        const sClass = document.getElementById("inputClass").value;
-        const year = document.getElementById("inputYear").value;
+    function openSearch(cls, yr) {
+        currentClass = cls;
+        currentYear = yr;
+        document.getElementById("modalTitle").innerText = cls + " Result - " + yr;
+        document.getElementById("searchModal").style.display = "block";
+    }
 
-        // Bachcha search karein database mein
-        const student = database.find(s => 
-            s.name.toLowerCase() === name.toLowerCase() && 
-            s.dob === dob && 
-            s.class === sClass && 
-            s.year === year
-        );
+    function closeSearch() {
+        document.getElementById("searchModal").style.display = "none";
+    }
 
-        if (student) {
-            document.getElementById("searchBox").style.display = "none";
-            document.getElementById("card").style.display = "block";
-
-            // Display Info
-            document.getElementById("resNameDisplay").innerText = student.name;
-            document.getElementById("resDOBDisplay").innerText = student.dob;
-            document.getElementById("resClassDisplay").innerText = student.class;
-            document.getElementById("resYearDisplay").innerText = student.year;
-            document.getElementById("resStatusDisplay").innerText = student.status;
-
-            const subjects = ["Quran","Hifz","Deeniyat","Urdu","English","Hindi","Science","Social Science","Math","Dua"];
-            let rows = "";
-            subjects.forEach((subj, i) => {
-                rows += `<tr><td>${subj}</td><td>100</td><td>${student.marks[i]}</td></tr>`;
-            });
-            document.getElementById("marksTable").innerHTML = rows;
-        } else {
-            alert("Record nahi mila! Kripya sahi Name, DOB, Class aur Year bharein.");
-        }
+    function verifyResult() {
+        // Yahan wahi verification logic aayega jo humne pehle banaya tha
+        alert("Searching for: " + currentClass + " Year: " + currentYear);
+        // Aap yahan apna purana studentRecords wala logic jod sakte hain
     }
 </script>
+
 </body>
 </html>

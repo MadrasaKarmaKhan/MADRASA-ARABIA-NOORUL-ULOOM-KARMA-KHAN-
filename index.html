@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Madarsa Result Card</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; background-color: #f0f0f0; margin: 0; padding: 20px; }
+        .card { background: white; padding: 20px; border-radius: 10px; max-width: 600px; margin: auto; border: 2px solid #1e5631; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h1 { color: #1e5631; }
+        .search-section { margin-bottom: 20px; padding: 20px; background: #e8f5e9; border-radius: 8px; }
+        input { padding: 10px; width: 70%; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 10px 20px; background: #1e5631; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>MADARSA ARABIA NOORUL ULOOM</h1>
+        <div class="search-section">
+            <h3>Check Result 2026</h3>
+            <input type="text" id="rollNo" placeholder="Enter Roll Number">
+            <br>
+            <button onclick="showResult()">View Result</button>
+        </div>
+        <div id="resultDisplay" style="display:none; text-align: left; padding: 10px; border-top: 1px solid #ddd;">
+            <p><strong>Name:</strong> <span id="sName"></span></p>
+            <p><strong>Roll No:</strong> <span id="sRoll"></span></p>
+            <p><strong>Status:</strong> <span id="sStatus" style="font-weight:bold; color: green;">PASS</span></p>
+        </div>
+    </div>
+
+    <script>
+        function showResult() {
+            var roll = document.getElementById('rollNo').value;
+            if(roll === "") {
+                alert("Please enter a Roll Number");
+                return;
+            }
+            // Demo data
+            document.getElementById('sName').innerText = "Student Name Here";
+            document.getElementById('sRoll').innerText = roll;
+            document.getElementById('resultDisplay').style.display = "block";
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Madarsa Admin Panel</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f4; padding: 20px; text-align: center; }
+        .login-box, .admin-container { 
+            max-width: 500px; margin: auto; background: white; padding: 30px; 
+            border-radius: 12px; border-top: 5px solid #1e5631; box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+        }
+        .hidden { display: none; }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        .btn { background: #1e5631; color: white; border: none; padding: 15px; width: 100%; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        .marks-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+    <div id="loginBox" class="login-box">
+        <h2 style="color: #1e5631;">Admin Login</h2>
+        <p>Aage badhne ke liye password dalein</p>
+        <input type="password" id="adminPass" placeholder="Enter Password">
+        <button class="btn" onclick="checkLogin()">LOGIN</button>
+    </div>
+
+    <div id="adminDashboard" class="admin-container hidden">
+        <h2 style="color: #1e5631;">Add New Result</h2>
+        
+        <div style="text-align: left;">
+            <label>Student Full Name:</label>
+            <input type="text" id="name" placeholder="Full Name">
+            
+            <label>Date of Birth:</label>
+            <input type="date" id="dob">
+            
+            <label>Class:</label>
+            <select id="class">
+                <option value="LKG">LKG</option>
+                <option value="UKG">UKG</option>
+                <option value="1st">1st</option>
+                <option value="2nd">2nd</option>
+                <option value="3rd">3rd</option>
+                <option value="4th">4th</option>
+                <option value="5th">5th</option>
+            </select>
+            
+            <label>Passing Year:</label>
+            <input type="number" id="year" placeholder="Year (e.g. 2026)">
+
+            <h4 style="margin-bottom: 5px;">Marks (Out of 100):</h4>
+            <div class="marks-grid">
+                <input type="number" id="m1" placeholder="Quran">
+                <input type="number" id="m2" placeholder="Hifz">
+                <input type="number" id="m3" placeholder="Deeniyat">
+                <input type="number" id="m4" placeholder="Urdu">
+                <input type="number" id="m5" placeholder="English">
+                <input type="number" id="m6" placeholder="Hindi">
+                <input type="number" id="m7" placeholder="Science">
+                <input type="number" id="m8" placeholder="S. Science">
+                <input type="number" id="m9" placeholder="Math">
+                <input type="number" id="m10" placeholder="Dua">
+            </div>
+        </div>
+        
+        <button class="btn" style="margin-top: 20px;" onclick="submitData()">SAVE RESULT</button>
+        <button onclick="logout()" style="margin-top: 10px; background: none; border: none; color: red; cursor: pointer;">Logout</button>
+    </div>
+
+    <script>
+        // Aapka Admin Password
+        const SECRET_PASS = "Madarsa786"; 
+
+        function checkLogin() {
+            const pass = document.getElementById("adminPass").value;
+            if (pass === SECRET_PASS) {
+                document.getElementById("loginBox").classList.add("hidden");
+                document.getElementById("adminDashboard").classList.remove("hidden");
+            } else {
+                alert("Galat Password!");
+            }
+        }
+
+        function submitData() {
+            // Data nikalna
+            const studentData = {
+                name: document.getElementById("name").value,
+                dob: document.getElementById("dob").value,
+                class: document.getElementById("class").value,
+                year: document.getElementById("year").value,
+                marks: [
+                    document.getElementById("m1").value,
+                    document.getElementById("m2").value,
+                    document.getElementById("m3").value,
+                    document.getElementById("m4").value,
+                    document.getElementById("m5").value,
+                    document.getElementById("m6").value,
+                    document.getElementById("m7").value,
+                    document.getElementById("m8").value,
+                    document.getElementById("m9").value,
+                    document.getElementById("m10").value
+                ]
+            };
+
+            if(!studentData.name || !studentData.dob) {
+                alert("Naam aur DOB zaroori hai!");
+                return;
+            }
+
+            console.log("Saving Data:", studentData);
+            alert("Data taiyar hai! Agle step mein hum isse Google Sheet se jodenge.");
+        }
+
+        function logout() {
+            location.reload();
+        }
+    </script>
+</body>
+</html>

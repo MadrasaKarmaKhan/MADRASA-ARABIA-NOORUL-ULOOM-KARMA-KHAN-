@@ -3,100 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Noorul Uloom Digital Dashboard</title>
+    <title>Madarsa Noorul Uloom Dashboard</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; margin: 0; padding: 20px; text-align: center; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        h1 { color: #1e5631; }
-        
-        /* Tabs and Buttons Style */
-        .class-section { margin: 20px 0; padding: 15px; border: 2px solid #e0e0e0; border-radius: 10px; }
-        .class-title { font-size: 22px; font-weight: bold; color: #1e5631; margin-bottom: 10px; }
-        .year-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-        .btn-year { padding: 10px 15px; background: #ffffff; border: 2px solid #1e5631; color: #1e5631; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-year:hover { background: #1e5631; color: white; }
-        
-        /* Modal for Search */
-        #searchModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 100; }
-        .modal-content { background: white; width: 90%; max-width: 400px; margin: 100px auto; padding: 25px; border-radius: 10px; position: relative; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        .btn-check { background: #1e5631; color: white; border: none; padding: 12px; width: 100%; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        :root { --primary-color: #1b5e20; --bg-color: #f4f7f6; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: var(--bg-color); }
+
+        /* Header Style */
+        header { background: white; padding: 15px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .menu-btn { cursor: pointer; color: var(--primary-color); margin-right: 15px; }
+        header h1 { font-size: 18px; color: var(--primary-color); margin: 0; }
+
+        /* Sidebar Style (Samastha style) */
+        .sidebar { position: fixed; left: -280px; top: 0; width: 280px; height: 100%; background: white; transition: 0.3s; box-shadow: 2px 0 10px rgba(0,0,0,0.2); z-index: 200; padding-top: 20px; }
+        .sidebar.active { left: 0; }
+        .sidebar a { display: block; padding: 15px 25px; color: #333; text-decoration: none; border-bottom: 1px solid #eee; font-weight: 500; }
+        .sidebar a:hover { background: #f0f0f0; color: var(--primary-color); }
+        .overlay { display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:150; }
+
+        /* Dashboard Container */
+        .container { max-width: 600px; margin: 20px auto; padding: 15px; }
+        .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; border: 1px solid #e0e0e0; }
+        .class-title { font-weight: bold; color: var(--primary-color); margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 5px; }
+
+        /* Year Buttons */
+        .year-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 8px; }
+        .year-btn { border: 1px solid #ccc; background: white; padding: 8px 5px; border-radius: 5px; cursor: pointer; font-size: 13px; transition: 0.2s; }
+        .year-btn:hover { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+
+        /* Search Modal (Pop-up) */
+        .modal { display:none; position: fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:25px; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.3); z-index:300; width: 90%; max-width: 400px; }
+        .modal input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box;}
+        .submit-btn { background: var(--primary-color); color: white; border: none; padding: 12px; width: 100%; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="container" id="dashboard">
-    <h1>Madarsa Noorul Uloom Dashboard</h1>
-    <p>Apni Class aur Saal (Year) chuniye:</p>
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    <div class="sidebar" id="sidebar">
+        <div style="text-align:center; padding: 20px;"><img src="https://via.placeholder.com/80" alt="Logo"><br><b>Madarsa Noorul Uloom</b></div>
+        <a href="#">Home</a>
+        <a href="#">Online Madrasa</a>
+        <a href="#">About Us</a>
+        <a href="#">News & Events</a>
+        <a href="#">Gallery</a>
+        <a href="#">Public Exams</a>
+        <a href="#" style="color: red;" onclick="toggleMenu()">Close Menu</a>
+    </div>
 
-    <div class="class-section">
-        <div class="class-title">LKG Result Check</div>
-        <div class="year-buttons">
-            <button class="btn-year" onclick="openSearch('LKG', '2021')">2021</button>
-            <button class="btn-year" onclick="openSearch('LKG', '2022')">2022</button>
-            <button class="btn-year" onclick="openSearch('LKG', '2023')">2023</button>
-            <button class="btn-year" onclick="openSearch('LKG', '2024')">2024</button>
-            <button class="btn-year" onclick="openSearch('LKG', '2025')">2025</button>
-            <button class="btn-year" onclick="openSearch('LKG', '2026')">2026</button>
+    <header>
+        <span class="material-icons menu-btn" onclick="toggleMenu()">menu</span>
+        <h1>Madarsa Noorul Uloom Dashboard</h1>
+    </header>
+
+    <div class="container">
+        <p style="text-align:center; color: #666; font-size: 14px;">Apni Class aur Saal (Year) chuniye:</p>
+
+        <div class="card">
+            <div class="class-title">LKG Result Check</div>
+            <div class="year-grid">
+                <button class="year-btn" onclick="openSearch('LKG', '2021')">2021</button>
+                <button class="year-btn" onclick="openSearch('LKG', '2022')">2022</button>
+                <button class="year-btn" onclick="openSearch('LKG', '2023')">2023</button>
+                <button class="year-btn" onclick="openSearch('LKG', '2024')">2024</button>
+                <button class="year-btn" onclick="openSearch('LKG', '2025')">2025</button>
+                <button class="year-btn" onclick="openSearch('LKG', '2026')">2026</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="class-title">UKG Result Check</div>
+            <div class="year-grid">
+                <button class="year-btn" onclick="openSearch('UKG', '2024')">2024</button>
+                <button class="year-btn" onclick="openSearch('UKG', '2025')">2025</button>
+                <button class="year-btn" onclick="openSearch('UKG', '2026')">2026</button>
+            </div>
         </div>
     </div>
 
-    <div class="class-section">
-        <div class="class-title">UKG Result Check</div>
-        <div class="year-buttons">
-            <button class="btn-year" onclick="openSearch('UKG', '2021')">2021</button>
-            <button class="btn-year" onclick="openSearch('UKG', '2022')">2022</button>
-            <button class="btn-year" onclick="openSearch('UKG', '2023')">2023</button>
-            <button class="btn-year" onclick="openSearch('UKG', '2024')">2024</button>
-            <button class="btn-year" onclick="openSearch('UKG', '2025')">2025</button>
-            <button class="btn-year" onclick="openSearch('UKG', '2026')">2026</button>
-        </div>
+    <div class="modal" id="searchModal">
+        <h3 id="modalTitle" style="margin-top:0; color:var(--primary-color)">Check Result</h3>
+        <p id="modalSub" style="font-size:12px; color:#666"></p>
+        <input type="text" id="rollNo" placeholder="Roll Number Daalein">
+        <input type="text" id="dob" placeholder="DOB (DD-MM-YYYY)">
+        <button class="submit-btn" onclick="findResult()">Check Result</button>
+        <button onclick="closeModal()" style="background:none; border:none; color:grey; margin-top:10px; cursor:pointer; width:100%">Cancel</button>
     </div>
 
-    <div class="class-section">
-        <div class="class-title">Class 1 Result Check</div>
-        <div class="year-buttons">
-            <button class="btn-year" onclick="openSearch('1st', '2021')">2021</button>
-            <button class="btn-year" onclick="openSearch('1st', '2022')">2022</button>
-            <button class="btn-year" onclick="openSearch('1st', '2023')">2023</button>
-            <button class="btn-year" onclick="openSearch('1st', '2024')">2024</button>
-            <button class="btn-year" onclick="openSearch('1st', '2025')">2025</button>
-            <button class="btn-year" onclick="openSearch('1st', '2026')">2026</button>
-        </div>
-    </div>
-</div>
+    <script>
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+            var overlay = document.getElementById('overlay');
+            overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
+        }
 
-<div id="searchModal">
-    <div class="modal-content">
-        <h3 id="modalTitle">Check Result</h3>
-        <input type="text" id="studentName" placeholder="Student Name">
-        <input type="date" id="studentDOB">
-        <button class="btn-check" onclick="verifyResult()">Result Dekhein</button>
-        <button onclick="closeSearch()" style="margin-top:10px; background:none; border:none; color:red; cursor:pointer;">Cancel</button>
-    </div>
-</div>
+        function openSearch(className, year) {
+            document.getElementById('modalTitle').innerText = className + " Result - " + year;
+            document.getElementById('modalSub').innerText = "Please enter details for " + year;
+            document.getElementById('searchModal').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        }
 
-<script>
-    let currentClass = "";
-    let currentYear = "";
+        function closeModal() {
+            document.getElementById('searchModal').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
 
-    function openSearch(cls, yr) {
-        currentClass = cls;
-        currentYear = yr;
-        document.getElementById("modalTitle").innerText = cls + " Result - " + yr;
-        document.getElementById("searchModal").style.display = "block";
-    }
-
-    function closeSearch() {
-        document.getElementById("searchModal").style.display = "none";
-    }
-
-    function verifyResult() {
-        // Yahan wahi verification logic aayega jo humne pehle banaya tha
-        alert("Searching for: " + currentClass + " Year: " + currentYear);
-        // Aap yahan apna purana studentRecords wala logic jod sakte hain
-    }
-</script>
-
+        function findResult() {
+            var roll = document.getElementById('rollNo').value;
+            if(roll === "") { alert("Roll number daalna zaruri hai"); return; }
+            // Yahan hum baad mein Google Sheet ka link jodenge
+            alert("Checking Result for Roll No: " + roll + "\n(Connectivity with Google Sheet is pending)");
+        }
+    </script>
 </body>
 </html>

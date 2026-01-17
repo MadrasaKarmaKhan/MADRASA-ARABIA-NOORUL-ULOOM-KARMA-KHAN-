@@ -2,119 +2,152 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Report Card - Noorul Uloom</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Card - Madarsa Arabia Noorul Uloom</title>
     <style>
-        body { font-family: sans-serif; background: #ddd; padding: 20px; }
-        #card { width: 850px; margin: auto; background: white; border: 8px double #1b5e20; padding: 40px; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
-        .header { text-align: center; border-bottom: 2px solid #1b5e20; margin-bottom: 20px; }
-        .exam-tag { background: #1b5e20; color: white; padding: 8px 25px; border-radius: 50px; font-weight: bold; display: inline-block; margin-bottom: 15px; }
-        .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; font-weight: bold; border: 1px solid #eee; padding: 15px; border-radius: 10px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 18px; }
-        th, td { border: 1px solid #1b5e20; padding: 12px; text-align: center; }
-        th { background: #f0f0f0; }
-        .result-footer { display: flex; justify-content: space-between; margin-top: 50px; font-weight: bold; }
-        #statusLabel { font-size: 28px; font-weight: bold; text-align: center; margin-top: 20px; }
+        :root { --primary: #1e5631; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #ddd; padding: 20px; margin: 0; }
+        #card { width: 850px; margin: auto; background: white; border: 10px double var(--primary); padding: 40px; box-shadow: 0 0 20px rgba(0,0,0,0.2); position: relative; }
+        .header { text-align: center; border-bottom: 2px solid var(--primary); margin-bottom: 20px; padding-bottom: 10px; }
+        .school-name { font-size: 32px; font-weight: bold; color: var(--primary); margin: 0; }
+        .exam-tag { background: var(--primary); color: white; padding: 8px 25px; border-radius: 50px; font-weight: bold; display: inline-block; margin: 15px 0; }
+        
+        .student-info { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; border: 1px solid #eee; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 15px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid var(--primary); padding: 10px; text-align: center; }
+        th { background: #f2f2f2; }
+        
+        .summary { display: flex; justify-content: space-between; margin-top: 20px; font-weight: bold; background: #e8f5e9; padding: 15px; border-radius: 8px; border: 1px solid var(--primary); }
+        .footer-sigs { display: flex; justify-content: space-between; margin-top: 60px; font-weight: bold; }
+        
+        @media print { .print-btn { display: none; } body { background: white; padding: 0; } #card { box-shadow: none; border: 5px solid var(--primary); } }
     </style>
 </head>
 <body>
 
 <div id="card">
     <div class="header">
-        <h1 style="margin:0; font-size: 32px;">MADARSA ARABIA NOORUL ULOOM</h1>
-        <p>Karma Khan, Sant Kabir Nagar (U.P.)</p>
-        <div class="exam-tag" id="examHeading">REPORT CARD</div>
+        <h1 class="school-name">MADARSA ARABIA NOORUL ULOOM</h1>
+        <p style="margin: 5px 0;">Karma Khan, Sant Kabir Nagar (U.P.)</p>
+        <div class="exam-tag" id="examHeading">ANNUAL REPORT CARD</div>
     </div>
 
-    <div class="details-grid">
-        <div>Name: <span id="sname">...</span></div>
-        <div>Father: <span id="sfname">...</span></div>
+    <div class="student-info">
         <div>Roll No: <span id="sroll">...</span></div>
         <div>Class: <span id="sclass">...</span></div>
+        <div>Student Name: <span id="sname">...</span></div>
         <div>D.O.B: <span id="sdob">...</span></div>
+        <div>Father's Name: <span id="sfname">...</span></div>
+        <div>Mother's Name: <span id="smname">...</span></div>
+        <div style="grid-column: span 2;">Address: <span id="saddress">...</span></div>
     </div>
 
     <table>
         <thead>
-            <tr><th>Subject</th><th>Max</th><th>Obtained</th></tr>
+            <tr>
+                <th>Subject Name</th>
+                <th>Maximum Marks</th>
+                <th>Obtained Marks</th>
+            </tr>
         </thead>
-        <tbody id="markSheet"></tbody>
+        <tbody id="markSheet">
+            </tbody>
         <tfoot>
-            <tr style="font-weight: bold; background: #e8f5e9;">
-                <td>TOTAL</td><td>1000</td><td id="totalMarks">0</td>
+            <tr style="font-weight: bold;">
+                <td>TOTAL</td>
+                <td>1000</td>
+                <td id="totalObt">0</td>
             </tr>
         </tfoot>
     </table>
 
-    <div id="statusLabel"></div>
+    <div class="summary">
+        <div>Percentage: <span id="percent">0%</span></div>
+        <div>Attendance: <span id="sattnd">0%</span></div>
+        <div>Result: <span id="status">...</span></div>
+    </div>
 
-    <div class="result-footer">
-        <div>Principal Signature: _____________</div>
-        <div>Parent Signature: _____________</div>
+    <div class="footer-sigs">
+        <div>Parent's Signature</div>
+        <div>Class Teacher</div>
+        <div>Principal Seal & Sig.</div>
     </div>
 </div>
 
-<div style="text-align:center; margin-top:30px;">
-    <button onclick="window.print()" style="padding:15px 40px; background:#1b5e20; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">DOWNLOAD PDF / PRINT</button>
+<div style="text-align: center; margin-top: 20px;" class="print-btn">
+    <button onclick="window.print()" style="padding: 10px 30px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Download / Print PDF</button>
 </div>
 
 <script>
     window.onload = function() {
         const p = new URLSearchParams(window.location.search);
+        // Dashboard se data lena
         const roll = p.get('roll');
         const name = p.get('name');
         const dob = p.get('dob');
         const type = p.get('type');
-        const month = p.get('month');
         const cls = p.get('class');
 
-        document.getElementById('examHeading').innerText = (type === "Monthly" ? month + " Monthly" : type) + " Exam - 2026";
-        loadData(roll, name, dob, type, month, cls);
+        document.getElementById('examHeading').innerText = type.toUpperCase() + " EXAMINATION";
+        loadStudentData(roll, name, dob, type, cls);
     };
 
-    async function loadData(roll, name, dob, type, month, cls) {
-        // !!! YAHAN APNA CSV LINK PASTE KAREIN !!!
-        const sheetUrl = 'YAHAN_LINK_DALEIN';
+    async function loadStudentData(roll, name, dob, type, cls) {
+        // !!! APNI GOOGLE SHEET KA CSV LINK YAHAN DALEIN !!!
+        const sheetUrl = 'YOUR_CSV_LINK_HERE';
 
         try {
             const res = await fetch(sheetUrl);
-            const data = await res.text();
-            const rows = data.split('\n').map(r => r.split(','));
+            const text = await res.text();
+            const rows = text.split('\n').map(r => r.split(','));
 
-            // Match all 5 conditions
+            // Data matching as per Admin Panel sequence
             const student = rows.find(r => 
                 r[0].trim() === roll.trim() && 
-                r[1].trim().toLowerCase() === name.toLowerCase() &&
-                r[3].trim() === cls.trim() &&
-                r[4].trim() === type.trim() &&
+                r[1].trim().toLowerCase() === name.toLowerCase().trim() &&
                 r[15].trim() === dob.trim()
             );
 
-            if(student) {
+            if (student) {
+                document.getElementById('sroll').innerText = student[0];
                 document.getElementById('sname').innerText = student[1];
                 document.getElementById('sfname').innerText = student[2];
-                document.getElementById('sroll').innerText = student[0];
-                document.getElementById('sclass').innerText = student[3];
+                document.getElementById('smname').innerText = student[3];
+                document.getElementById('sclass').innerText = student[4];
                 document.getElementById('sdob').innerText = student[15];
+                document.getElementById('sattnd').innerText = student[16] + "%";
+                document.getElementById('saddress').innerText = student[17];
 
-                const subjects = ["Quran","Hifz","Deeniyat","Urdu","English","Hindi","Science","S. Science","Math","Dua"];
+                const subjects = ["Quran (Nazra)", "Hifz", "Deeniyat", "Urdu", "English", "Hindi", "Science", "S. Science", "Mathematics", "Dua & Kalma"];
                 let total = 0;
                 let html = "";
-                subjects.forEach((s, i) => {
+
+                // Marks start from column index 5 to 14
+                for (let i = 0; i < 10; i++) {
                     let m = parseInt(student[5 + i]) || 0;
                     total += m;
-                    html += `<tr><td>${s}</td><td>100</td><td>${m}</td></tr>`;
-                });
+                    html += `<tr><td>${subjects[i]}</td><td>100</td><td>${m}</td></tr>`;
+                }
 
                 document.getElementById('markSheet').innerHTML = html;
-                document.getElementById('totalMarks').innerText = total;
-                const status = document.getElementById('statusLabel');
-                status.innerText = total >= 330 ? "PASSED ✓" : "FAILED ✗";
-                status.style.color = total >= 330 ? "green" : "red";
+                document.getElementById('totalObt').innerText = total;
+                
+                let percentage = (total / 10).toFixed(2);
+                document.getElementById('percent').innerText = percentage + "%";
+                
+                const status = document.getElementById('status');
+                status.innerText = percentage >= 33 ? "PASSED" : "FAILED";
+                status.style.color = percentage >= 33 ? "green" : "red";
+
             } else {
-                alert("Details galat hain! Please check Name, Roll No aur DOB.");
+                alert("No record found! Please check your details.");
                 window.location.href = "index.html";
             }
-        } catch(e) { alert("Server Error! Check Internet Connection."); }
+        } catch (e) {
+            console.error(e);
+            alert("Error loading data. Check internet or CSV link.");
+        }
     }
 </script>
 </body>

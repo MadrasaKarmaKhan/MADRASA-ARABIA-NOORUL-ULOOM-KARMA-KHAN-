@@ -1,161 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Madrasa Result Card - Online</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<style>
-    body { margin:0; padding:10px; font-family:"Segoe UI", Arial, sans-serif; background: linear-gradient(135deg, #1e5631, #a4be7b); font-weight:700; }
-    #card { width:950px; margin:auto; background: #ffffff; border-radius:16px; padding:25px; padding-bottom: 50px; min-height: 1000px; border:5px solid #1e5631; position: relative; box-shadow:0 10px 20px rgba(0,0,0,0.3); transform: scale(0.9); transform-origin: top center; }
-    
-    #topSpace { position: relative; height:220px; margin-bottom:50px; background: linear-gradient(90deg, #fdfbf7, #fffdd0, #fdfbf7); margin: -25px -25px 40px -25px; padding: 20px; border-radius: 12px 12px 0 0; border-bottom: 2px solid #a5d6a7; }
-    
-    .reg-no { position: absolute; top: 10px; font-size: 14px; color: #2e7d32; }
-    .urdu-label { font-family: "Urdu Typesetting", serif; font-size: 24px; color: #1b5e20; }
-    #headerDraggable { text-align:center; color: #1b5e20; }
-    
-    #photoBox { position: absolute; top: 60px; right: 15px; width:140px; height:160px; border:2px solid #2e7d32; background: #fff; display:flex; align-items:center; justify-content:center; }
-    #photoBox img { width:100%; height:100%; object-fit:cover; }
-    
-    .row { display:flex; gap:15px; margin-bottom:12px; align-items:center; color: #1e5631; }
-    input { font-size:18px; font-weight:800; padding:5px; border:1.5px solid #1e5631; border-radius:4px; background: #f9fff9; color: black !important; }
-    
-    table { width:100%; border-collapse:collapse; margin-top:20px; background:white; border: 2px solid #1e5631; }
-    th, td { border:1.5px solid #1e5631; padding:8px; text-align:center; font-size:18px; color: black; }
-    th { background: #FFFDD0; }
-
-    #resultBox { margin:20px auto; width:70%; padding:12px; text-align:center; font-size:24px; font-weight:900; border:2px solid #1b5e20; border-radius:10px; display: flex; justify-content: center; gap: 40px; color: #1b5e20; }
-    .status-label { opacity: 0.2; }
-    .status-active { opacity: 1; border-bottom: 3px solid #1b5e20; }
-    
-    .controls { text-align:center; margin-top:10px; display: flex; justify-content: center; gap: 10px; }
-    .btn { padding: 10px 20px; border-radius: 5px; cursor: pointer; border: none; color: white; font-weight: bold; }
-
-    @media print { .controls { display: none !important; } #card { transform: scale(1); border:none; } }
-</style>
+    <meta charset="UTF-8">
+    <title>Madarsa Result Card</title>
+    <style>
+        body { padding: 20px; font-family: sans-serif; background: #f0f0f0; }
+        #card { width: 800px; margin: auto; background: white; border: 4px solid #1b5e20; padding: 30px; position: relative; }
+        .header { text-align: center; color: #1b5e20; border-bottom: 2px solid #1b5e20; padding-bottom: 10px; }
+        .exam-tag { background: #fffdd0; padding: 5px 20px; border-radius: 20px; border: 1px solid #1b5e20; font-weight: bold; display: inline-block; margin-top: 10px; }
+        .info-table { width: 100%; margin: 20px 0; }
+        .info-table td { padding: 5px; font-weight: bold; }
+        table.marks { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        table.marks th, table.marks td { border: 1px solid #1b5e20; padding: 10px; text-align: center; }
+        .footer { margin-top: 50px; display: flex; justify-content: space-between; }
+    </style>
 </head>
 <body>
 
 <div id="card">
-    <div id="topSpace">
-        <div class="reg-no" style="left: 19px;">Reg. No: <input id="regNo" readonly style="border:none; background:transparent;"></div>
-        <div class="reg-no urdu-label" style="right: 19px; direction: rtl;">رکنیت نمبر: <input id="udise" readonly style="border:none; background:transparent; text-align:right;"></div>
-        
-        <div id="headerDraggable">
-            <h1 style="margin:0; font-size:35px;">MADARSA ARABIA NOORUL ULOOM</h1>
-            <p style="margin:0; font-size:18px;">Karma Khan, Distt: Sant Kabir Nagar (U.P.)</p>
-            <div style="font-size:22px; margin-top:10px; background: #FFFDD0; padding: 5px 20px; border: 1px solid #1e5631; display:inline-block; border-radius:20px;">Report Card - 2026</div>
-        </div>
-        <div id="photoBox"><img id="photoPreview" src="https://via.placeholder.com/140x160?text=Student+Photo"></div>
-    </div>
-    
-    <div class="row">
-        <div>Student Name: <input id="sname" readonly style="width:300px;"></div>
-        <div style="flex-grow:1">Father Name: <input id="fname" readonly style="width:100%;"></div>
-    </div>
-    <div class="row">
-        <div>Mother Name: <input id="mname" readonly style="width:250px;"></div>
-        <div>D.O.B: <input id="dob" readonly style="width:130px;"></div>
-        <div>Class: <input id="sclass" readonly style="width:80px;"></div>
-        <div>Roll: <input id="rollno" readonly style="width:80px;"></div>
+    <div class="header">
+        <h1 style="margin:0;">MADARSA ARABIA NOORUL ULOOM</h1>
+        <p>Karma Khan, Sant Kabir Nagar (U.P.)</p>
+        <div class="exam-tag" id="examHeading">Report Card</div>
     </div>
 
-    <table>
-        <thead><tr><th>Subject</th><th>Max</th><th>Obtained</th></tr></thead>
-        <tbody id="markSheet">
-            </tbody>
+    <table class="info-table">
+        <tr>
+            <td>Name: <span id="sname">...</span></td>
+            <td>Father: <span id="fname">...</span></td>
+        </tr>
+        <tr>
+            <td>Roll No: <span id="roll">...</span></td>
+            <td>Class: <span id="class">...</span></td>
+            <td>Year: <span id="year">...</span></td>
+        </tr>
+    </table>
+
+    <table class="marks">
+        <thead>
+            <tr style="background:#e8f5e9;"><th>Subject</th><th>Max Marks</th><th>Obtained</th></tr>
+        </thead>
+        <tbody id="markSheet"></tbody>
         <tfoot>
-            <tr style="background:#f9fff9"><th>Total</th><th>1000</th><th id="total">0</th></tr>
-            <tr style="background:#f9fff9"><th>Percentage</th><th colspan="2" id="percent">0%</th></tr>
+            <tr style="font-weight:bold;"><td>TOTAL</td><td>1000</td><td id="total">0</td></tr>
+            <tr style="font-weight:bold;"><td>RESULT</td><td colspan="2" id="resultStatus">...</td></tr>
         </tfoot>
     </table>
 
-    <div id="resultBox">
-        <span>RESULT:</span>
-        <span id="passLabel" class="status-label">PASS ✓</span>
-        <span id="failLabel" class="status-label">FAIL ✗</span>
+    <div class="footer">
+        <div>Principal Signature</div>
+        <div>Parent Signature</div>
     </div>
-
-    <div class="footer-sign" style="display:flex; justify-content:space-between; margin-top:40px;">
-        <div>Principal Signature: __________________</div>
-        <div>Stamp: __________________</div>
-    </div>
-</div>
-
-<div class="controls">
-    <button class="btn" onclick="window.print()" style="background: #2980b9;">PRINT CARD</button>
-    <button class="btn" onclick="window.location.href='index.html'" style="background: #7f8c8d;">BACK TO HOME</button>
 </div>
 
 <script>
-const subjects = ["Quran", "Hifz", "Deeniyat", "Urdu", "English", "Hindi", "Science", "S. Science", "Math", "Dua"];
+    window.onload = function() {
+        const params = new URLSearchParams(window.location.search);
+        const roll = params.get('roll');
+        const type = params.get('type');
+        const sClass = params.get('class');
+        const sYear = params.get('year');
 
-// Modal loading logic
-window.onload = function() {
-    const params = new URLSearchParams(window.location.search);
-    const roll = params.get('roll');
-    if(roll) {
-        fetchStudentData(roll);
-    } else {
-        alert("Kripya Roll Number Dashboard se daalein");
-        window.location.href = 'index.html';
-    }
-};
+        document.getElementById('examHeading').innerText = `${type} Examination - ${sYear}`;
+        document.getElementById('roll').innerText = roll;
+        document.getElementById('class').innerText = sClass;
+        document.getElementById('year').innerText = sYear;
 
-async function fetchStudentData(roll) {
-    // 1. APNI GOOGLE SHEET KA "PUBLISH TO WEB" CSV LINK YAHAN PASTE KAREIN
-    const sheetUrl = 'YAHAN_APNA_CSV_LINK_DAALEIN';
+        fetchData(roll, type);
+    };
 
-    try {
-        const response = await fetch(sheetUrl);
-        const data = await response.text();
-        const rows = data.split('\n').map(row => row.split(','));
-
-        // Roll Number dhoondein (Maana ki Roll No column 0 mein hai)
-        const student = rows.find(r => r[0].trim() === roll.trim());
-
-        if(student) {
-            // Personal Details (Mapping columns to IDs)
-            document.getElementById('rollno').value = student[0];
-            document.getElementById('sname').value = student[1];
-            document.getElementById('fname').value = student[2];
-            document.getElementById('mname').value = student[3];
-            document.getElementById('sclass').value = student[4];
-            document.getElementById('dob').value = student[15] || ''; // DOB column
-            document.getElementById('regNo').value = student[16] || ''; 
-
-            // Marks Filling (Maana ki marks column index 5 se shuru hain)
-            let tableBody = document.getElementById('markSheet');
-            let totalMarks = 0;
-            tableBody.innerHTML = "";
-
-            subjects.forEach((sub, i) => {
-                let m = parseInt(student[5 + i]) || 0;
-                totalMarks += m;
-                tableBody.innerHTML += `<tr><td>${sub}</td><td>100</td><td>${m}</td></tr>`;
-            });
-
-            // Final Calculation
-            document.getElementById('total').innerText = totalMarks;
-            let per = (totalMarks / subjects.length).toFixed(2);
-            document.getElementById('percent').innerText = per + "%";
-
-            if(totalMarks >= 330) {
-                document.getElementById('passLabel').classList.add('status-active');
+    async function fetchData(roll, type) {
+        // YAHAN APNI GOOGLE SHEET KA CSV LINK DAALEIN
+        const sheetUrl = 'YOUR_CSV_LINK_HERE';
+        
+        try {
+            const res = await fetch(sheetUrl);
+            const text = await res.text();
+            const rows = text.split('\n').map(r => r.split(','));
+            
+            // Student ko dhoondein
+            const student = rows.find(r => r[0].trim() === roll.trim());
+            
+            if(student) {
+                document.getElementById('sname').innerText = student[1];
+                document.getElementById('fname').innerText = student[2];
+                
+                let subjects = ["Quran","Hifz","Deeniyat","Urdu","English","Hindi","Science","S. Science","Math","Dua"];
+                let total = 0;
+                let html = "";
+                
+                subjects.forEach((s, i) => {
+                    let mark = parseInt(student[5+i]) || 0;
+                    total += mark;
+                    html += `<tr><td>${s}</td><td>100</td><td>${mark}</td></tr>`;
+                });
+                
+                document.getElementById('markSheet').innerHTML = html;
+                document.getElementById('total').innerText = total;
+                document.getElementById('resultStatus').innerText = total >= 330 ? "PASS" : "FAIL";
             } else {
-                document.getElementById('failLabel').classList.add('status-active');
+                alert("Data nahi mila!");
             }
-        } else {
-            alert("Record nahi mila! Roll Number: " + roll);
-            window.location.href = 'index.html';
-        }
-    } catch (e) {
-        alert("Data load karne mein galti hui. Check internet connection.");
+        } catch(e) { console.error(e); }
     }
-}
 </script>
 </body>
 </html>

@@ -10,49 +10,47 @@
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); }
         header { background: white; padding: 15px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .menu-btn { cursor: pointer; color: var(--primary); font-size: 30px; margin-right: 15px; }
-        
-        .sidebar { position: fixed; left: -300px; top: 0; width: 280px; height: 100%; background: white; transition: 0.3s; box-shadow: 2px 0 10px rgba(0,0,0,0.2); z-index: 2000; overflow-y: auto; }
+        .sidebar { position: fixed; left: -300px; top: 0; width: 280px; height: 100%; background: white; transition: 0.3s; box-shadow: 2px 0 10px rgba(0,0,0,0.2); z-index: 2000; }
         .sidebar.active { left: 0; }
         .sidebar-header { background: var(--primary); color: white; padding: 20px; text-align: center; }
-        .sidebar a { display: flex; align-items: center; padding: 15px 20px; color: #333; text-decoration: none; border-bottom: 1px solid #eee; cursor: pointer; }
-        .sidebar a i { margin-right: 15px; color: var(--primary); }
+        .sidebar a { display: flex; align-items: center; padding: 15px 20px; color: #333; text-decoration: none; border-bottom: 1px solid #eee; }
         .overlay { display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1500; }
         
-        .container { padding: 20px; max-width: 500px; margin: auto; }
-        .card { background: white; border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-top: 5px solid var(--primary); text-align: center; }
-        
-        select, input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
-        .btn { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 18px; }
-        #monthSelectBox { display: none; }
+        .container { padding: 20px; max-width: 450px; margin: auto; }
+        .card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 6px solid var(--primary); }
+        label { display: block; text-align: left; font-weight: bold; font-size: 13px; color: #444; margin-top: 10px; }
+        select, input { width: 100%; padding: 12px; margin: 5px 0 15px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; box-sizing: border-box; }
+        .btn { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 18px; transition: 0.3s; }
+        .btn:hover { background: #0e3d14; }
+        #monthBox { display: none; }
     </style>
 </head>
 <body>
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
-
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header"><h3>Noorul Uloom</h3></div>
-        <a href="index.html"><i class="material-icons">home</i> Home</a>
-        <a href="#"><i class="material-icons">assignment</i> Admission</a>
-        <a href="admin.html"><i class="material-icons">lock</i> Admin Login</a>
+        <a href="index.html"><i class="material-icons" style="margin-right:10px">home</i> Home</a>
+        <a href="admin.html"><i class="material-icons" style="margin-right:10px">lock</i> Admin</a>
     </div>
 
     <header>
         <i class="material-icons menu-btn" onclick="toggleMenu()">menu</i>
-        <h1 style="font-size: 18px; color: var(--primary); margin:0;">Madarsa Noorul Uloom Portal</h1>
+        <h1 style="font-size: 18px; color: var(--primary); margin:0;">Result Check Center</h1>
     </header>
 
     <div class="container">
         <div class="card">
-            <h2 style="color: var(--primary);">Result Dashboard</h2>
-            <p>Apni details bharein:</p>
-
+            <h2 style="color: var(--primary); margin-top:0;">Search Result</h2>
+            
+            <label>1. EXAM TYPE</label>
             <select id="examType" onchange="toggleMonth()">
                 <option value="Yearly">Yearly Exam</option>
                 <option value="Half-Yearly">Half-Yearly Exam</option>
                 <option value="Monthly">Monthly Exam</option>
             </select>
 
-            <div id="monthSelectBox">
+            <div id="monthBox">
+                <label>SELECT MONTH</label>
                 <select id="sMonth">
                     <option value="January">January</option><option value="February">February</option>
                     <option value="March">March</option><option value="April">April</option>
@@ -63,6 +61,7 @@
                 </select>
             </div>
 
+            <label>2. CLASS</label>
             <select id="sClass">
                 <option value="LKG">LKG</option><option value="UKG">UKG</option>
                 <option value="Class 1">Class 1</option><option value="Class 2">Class 2</option>
@@ -70,9 +69,16 @@
                 <option value="Class 5">Class 5</option>
             </select>
 
-            <input type="text" id="rollNo" placeholder="Roll Number Daalein">
+            <label>3. STUDENT NAME</label>
+            <input type="text" id="sName" placeholder="Naam bilkul sahi likhein">
+
+            <label>4. ROLL NUMBER</label>
+            <input type="text" id="rollNo" placeholder="e.g. 101">
+
+            <label>5. DATE OF BIRTH</label>
+            <input type="date" id="dob">
             
-            <button class="btn" onclick="checkResult()">RESULT DEKHEIN</button>
+            <button class="btn" onclick="checkResult()">DEKHEIN RESULT</button>
         </div>
     </div>
 
@@ -84,16 +90,19 @@
         }
         function toggleMonth() {
             const type = document.getElementById('examType').value;
-            document.getElementById('monthSelectBox').style.display = (type === "Monthly") ? "block" : "none";
+            document.getElementById('monthBox').style.display = (type === "Monthly") ? "block" : "none";
         }
         function checkResult() {
             const type = document.getElementById('examType').value;
             const month = (type === "Monthly") ? document.getElementById('sMonth').value : "None";
             const cls = document.getElementById('sClass').value;
-            const roll = document.getElementById('rollNo').value;
+            const name = document.getElementById('sName').value.trim();
+            const roll = document.getElementById('rollNo').value.trim();
+            const dob = document.getElementById('dob').value;
 
-            if(!roll) return alert("Roll Number zaruri hai!");
-            window.location.href = `result-card.html?roll=${roll}&type=${type}&month=${month}&class=${cls}`;
+            if(!name || !roll || !dob) return alert("Kripya saari details bharein!");
+            
+            window.location.href = `result-card.html?roll=${roll}&name=${encodeURIComponent(name)}&dob=${dob}&type=${type}&month=${month}&class=${cls}`;
         }
     </script>
 </body>

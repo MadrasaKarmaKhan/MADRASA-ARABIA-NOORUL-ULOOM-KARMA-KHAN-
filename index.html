@@ -3,91 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Madarsa Noorul Uloom Dashboard</title>
+    <title>Madarsa Noorul Uloom - Portal</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        :root { --primary-color: #1b5e20; --bg-color: #f4f7f6; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: var(--bg-color); }
-
-        /* Header Style */
-        header { background: white; padding: 15px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
-        .menu-btn { cursor: pointer; color: var(--primary-color); margin-right: 15px; }
-        header h1 { font-size: 18px; color: var(--primary-color); margin: 0; }
-
-        /* Sidebar Style (Samastha style) */
-        .sidebar { position: fixed; left: -280px; top: 0; width: 280px; height: 100%; background: white; transition: 0.3s; box-shadow: 2px 0 10px rgba(0,0,0,0.2); z-index: 200; padding-top: 20px; }
+        :root { --primary-color: #1b5e20; --accent-color: #2e7d32; --bg-color: #f8f9fa; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--bg-color); }
+        
+        /* Navigation & Sidebar */
+        header { background: white; padding: 15px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .menu-btn { cursor: pointer; color: var(--primary-color); font-size: 30px; margin-right: 15px; }
+        .sidebar { position: fixed; left: -300px; top: 0; width: 280px; height: 100%; background: white; transition: 0.4s; box-shadow: 5px 0 15px rgba(0,0,0,0.2); z-index: 2000; overflow-y: auto; }
         .sidebar.active { left: 0; }
-        .sidebar a { display: block; padding: 15px 25px; color: #333; text-decoration: none; border-bottom: 1px solid #eee; font-weight: 500; }
-        .sidebar a:hover { background: #f0f0f0; color: var(--primary-color); }
-        .overlay { display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:150; }
+        .sidebar-header { background: var(--primary-color); color: white; padding: 30px 20px; text-align: center; }
+        .sidebar a { display: flex; align-items: center; padding: 15px 25px; color: #444; text-decoration: none; border-bottom: 1px solid #f0f0f0; transition: 0.3s; }
+        .sidebar a i { margin-right: 15px; color: var(--primary-color); }
+        .sidebar a:hover { background: #e8f5e9; color: var(--primary-color); }
+        .overlay { display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1500; }
 
-        /* Dashboard Container */
-        .container { max-width: 600px; margin: 20px auto; padding: 15px; }
-        .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; border: 1px solid #e0e0e0; }
-        .class-title { font-weight: bold; color: var(--primary-color); margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 5px; }
+        /* Content Area */
+        .main-content { padding: 20px; max-width: 800px; margin: auto; }
+        .section { display: none; animation: fadeIn 0.5s; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Year Buttons */
-        .year-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 8px; }
-        .year-btn { border: 1px solid #ccc; background: white; padding: 8px 5px; border-radius: 5px; cursor: pointer; font-size: 13px; transition: 0.2s; }
-        .year-btn:hover { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+        /* Cards & Buttons */
+        .card { background: white; border-radius: 15px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 5px solid var(--primary-color); }
+        .btn { background: var(--primary-color); color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; width: 100%; font-size: 16px; margin-top: 10px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
 
-        /* Search Modal (Pop-up) */
-        .modal { display:none; position: fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:25px; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.3); z-index:300; width: 90%; max-width: 400px; }
-        .modal input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box;}
-        .submit-btn { background: var(--primary-color); color: white; border: none; padding: 12px; width: 100%; border-radius: 5px; cursor: pointer; }
+        /* Result Grid */
+        .year-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+        .year-btn { border: 1px solid var(--primary-color); background: white; padding: 10px; border-radius: 5px; cursor: pointer; color: var(--primary-color); }
+        .year-btn:hover { background: var(--primary-color); color: white; }
     </style>
 </head>
 <body>
 
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
     <div class="sidebar" id="sidebar">
-        <div style="text-align:center; padding: 20px;"><img src="https://via.placeholder.com/80" alt="Logo"><br><b>Madarsa Noorul Uloom</b></div>
-        <a href="#">Home</a>
-        <a href="#">Online Madrasa</a>
-        <a href="#">About Us</a>
-        <a href="#">News & Events</a>
-        <a href="#">Gallery</a>
-        <a href="#">Public Exams</a>
-        <a href="#" style="color: red;" onclick="toggleMenu()">Close Menu</a>
+        <div class="sidebar-header">
+            <i class="material-icons" style="font-size: 50px;">account_balance</i>
+            <h3>Madarsa Noorul Uloom</h3>
+        </div>
+        <a href="#" onclick="showSection('home')"><i class="material-icons">home</i> Home</a>
+        <a href="#" onclick="showSection('admission')"><i class="material-icons">assignment</i> Admission Form</a>
+        <a href="#" onclick="showSection('students')"><i class="material-icons">groups</i> Student Details</a>
+        <a href="#" onclick="showSection('teachers')"><i class="material-icons">person_outline</i> Teacher Details</a>
+        <a href="#" onclick="showSection('result')"><i class="material-icons">grade</i> Result Check</a>
+        <a href="#" onclick="showSection('gallery')"><i class="material-icons">collections</i> Gallery</a>
+        <a href="#" onclick="showSection('about')"><i class="material-icons">info</i> About</a>
+        <a href="#" onclick="showSection('login')" style="margin-top: 20px; background: #fbe9e7;"><i class="material-icons">lock</i> Admin Login</a>
     </div>
 
     <header>
-        <span class="material-icons menu-btn" onclick="toggleMenu()">menu</span>
-        <h1>Madarsa Noorul Uloom Dashboard</h1>
+        <i class="material-icons menu-btn" onclick="toggleMenu()">menu</i>
+        <h2 style="color: var(--primary-color); margin: 0; font-size: 18px;">Madarsa Noorul Uloom</h2>
     </header>
 
-    <div class="container">
-        <p style="text-align:center; color: #666; font-size: 14px;">Apni Class aur Saal (Year) chuniye:</p>
-
-        <div class="card">
-            <div class="class-title">LKG Result Check</div>
-            <div class="year-grid">
-                <button class="year-btn" onclick="openSearch('LKG', '2021')">2021</button>
-                <button class="year-btn" onclick="openSearch('LKG', '2022')">2022</button>
-                <button class="year-btn" onclick="openSearch('LKG', '2023')">2023</button>
-                <button class="year-btn" onclick="openSearch('LKG', '2024')">2024</button>
-                <button class="year-btn" onclick="openSearch('LKG', '2025')">2025</button>
-                <button class="year-btn" onclick="openSearch('LKG', '2026')">2026</button>
+    <div class="main-content">
+        
+        <div id="home" class="section active">
+            <div class="card">
+                <h2>Khush Amdeed (Welcome)</h2>
+                <p>Madarsa Noorul Uloom ke digital portal mein aapka swagat hai. Yahan se aap result, admission aur deeni maloomat hasil kar sakte hain.</p>
+                <img src="https://via.placeholder.com/600x300?text=Madarsa+Building+Photo" style="width:100%; border-radius:10px;">
             </div>
         </div>
 
-        <div class="card">
-            <div class="class-title">UKG Result Check</div>
-            <div class="year-grid">
-                <button class="year-btn" onclick="openSearch('UKG', '2024')">2024</button>
-                <button class="year-btn" onclick="openSearch('UKG', '2025')">2025</button>
-                <button class="year-btn" onclick="openSearch('UKG', '2026')">2026</button>
+        <div id="admission" class="section">
+            <div class="card">
+                <h2>Admission Form 2026</h2>
+                <input type="text" placeholder="Student ka Pura Naam">
+                <input type="text" placeholder="Walid ka Naam">
+                <input type="date" placeholder="Date of Birth">
+                <select style="width:100%; padding:12px; margin:10px 0; border-radius:8px; border:1px solid #ddd;">
+                    <option>Class Chuniye</option>
+                    <option>LKG</option>
+                    <option>UKG</option>
+                    <option>Class 1</option>
+                </select>
+                <button class="btn">Submit Application</button>
             </div>
         </div>
-    </div>
 
-    <div class="modal" id="searchModal">
-        <h3 id="modalTitle" style="margin-top:0; color:var(--primary-color)">Check Result</h3>
-        <p id="modalSub" style="font-size:12px; color:#666"></p>
-        <input type="text" id="rollNo" placeholder="Roll Number Daalein">
-        <input type="text" id="dob" placeholder="DOB (DD-MM-YYYY)">
-        <button class="submit-btn" onclick="findResult()">Check Result</button>
-        <button onclick="closeModal()" style="background:none; border:none; color:grey; margin-top:10px; cursor:pointer; width:100%">Cancel</button>
+        <div id="result" class="section">
+            <div class="card">
+                <h2>Check Examination Result</h2>
+                <p>Apni Class aur saal chuniye:</p>
+                <h4 style="color:var(--primary-color)">LKG Result</h4>
+                <div class="year-grid">
+                    <button class="year-btn" onclick="alert('Enter Roll No for 2025')">2025</button>
+                    <button class="year-btn" onclick="alert('Enter Roll No for 2026')">2026</button>
+                </div>
+                <h4 style="color:var(--primary-color); margin-top:20px;">UKG Result</h4>
+                <div class="year-grid">
+                    <button class="year-btn" onclick="alert('Enter Roll No for 2026')">2026</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="students" class="section">
+            <div class="card">
+                <h2>Student Records (Class-wise)</h2>
+                <p>Yeh section sirf information ke liye hai. Detailed list niche dekhein:</p>
+                <div style="text-align:left; border-left: 3px solid var(--primary-color); padding-left:10px;">
+                    <p><b>LKG:</b> 40 Students</p>
+                    <p><b>UKG:</b> 35 Students</p>
+                    <p><b>Class 1:</b> 30 Students</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="login" class="section">
+            <div class="card" style="border-top: 5px solid #d32f2f;">
+                <h2>Admin Login</h2>
+                <p style="font-size:12px; color:red;">Sirf Madarsa Management ke liye</p>
+                <input type="text" id="adminUser" placeholder="Username">
+                <input type="password" id="adminPass" placeholder="Password">
+                <button class="btn" style="background:#d32f2f;" onclick="checkLogin()">Login to Dashboard</button>
+            </div>
+        </div>
+
+        <div id="about" class="section">
+            <div class="card">
+                <h2>Madarsa Noorul Uloom ke Baare Mein</h2>
+                <p>Hamara Madarsa deeni aur duniyawi taleem ka ek behtareen sangam hai. Hum bacho ki tarbiyat par khaas dhyan dete hain.</p>
+                <p><b>Pata:</b> Aapka Madarsa Address, City, State.</p>
+                <p><b>Contact:</b> +91 9876543210</p>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -97,23 +143,26 @@
             overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
         }
 
-        function openSearch(className, year) {
-            document.getElementById('modalTitle').innerText = className + " Result - " + year;
-            document.getElementById('modalSub').innerText = "Please enter details for " + year;
-            document.getElementById('searchModal').style.display = 'block';
-            document.getElementById('overlay').style.display = 'block';
+        function showSection(sectionId) {
+            // Saare sections hide karein
+            var sections = document.getElementsByClassName('section');
+            for (var i = 0; i < sections.length; i++) {
+                sections[i].classList.remove('active');
+            }
+            // Chuna hua section dikhayein
+            document.getElementById(sectionId).classList.add('active');
+            toggleMenu(); // Menu band karein
+            window.scrollTo(0,0);
         }
 
-        function closeModal() {
-            document.getElementById('searchModal').style.display = 'none';
-            document.getElementById('overlay').style.display = 'none';
-        }
-
-        function findResult() {
-            var roll = document.getElementById('rollNo').value;
-            if(roll === "") { alert("Roll number daalna zaruri hai"); return; }
-            // Yahan hum baad mein Google Sheet ka link jodenge
-            alert("Checking Result for Roll No: " + roll + "\n(Connectivity with Google Sheet is pending)");
+        function checkLogin() {
+            var user = document.getElementById('adminUser').value;
+            var pass = document.getElementById('adminPass').value;
+            if(user === "admin" && pass === "1234") {
+                alert("Welcome Admin! Aap editing kar sakte hain.");
+            } else {
+                alert("Galat Username ya Password!");
+            }
         }
     </script>
 </body>

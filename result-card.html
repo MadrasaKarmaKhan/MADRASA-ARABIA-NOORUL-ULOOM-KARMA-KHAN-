@@ -2,290 +2,160 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Madrasa Result Card</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Madrasa Result Card - Online</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-    body { margin:0; padding:30px; font-family:"Segoe UI", Arial, sans-serif; background: linear-gradient(135deg, #1e5631, #a4be7b); font-weight:700; }
-    #card { width:950px; margin:auto; background: #ffffff; border-radius:16px; padding:25px; padding-bottom: 50px; min-height: 1100px; border:5px solid #1e5631; position: relative; box-shadow:0 10px 20px rgba(0,0,0,0.3); }
-    #topSpace { position: relative; height:220px; margin-bottom:50px; background: linear-gradient(90deg, #fdfbf7, #fffdd0, #fdfbf7); margin: -25px -25px 40px -25px; padding: 20px; border-radius: 12px 12px 0 0; clip-path: ellipse(110% 100% at 50% 0%); border-bottom: 2px solid #a5d6a7; }
-    input, .mark, td, #total, #percent, #rank { color: #000000 !important; }
+    body { margin:0; padding:10px; font-family:"Segoe UI", Arial, sans-serif; background: linear-gradient(135deg, #1e5631, #a4be7b); font-weight:700; }
+    #card { width:950px; margin:auto; background: #ffffff; border-radius:16px; padding:25px; padding-bottom: 50px; min-height: 1000px; border:5px solid #1e5631; position: relative; box-shadow:0 10px 20px rgba(0,0,0,0.3); transform: scale(0.9); transform-origin: top center; }
     
-    .reg-no { position: absolute; top: 10px; font-size: 14px; color: #2e7d32; font-weight: 800; z-index: 15; }
-    .urdu-label { font-family: "Urdu Typesetting", "Sakkal Majalla", serif; font-size: 24px; font-weight: 900; color: #1b5e20; }
-
-    #headerDraggable { position: absolute; left: 50%; transform: translateX(-50%); width: 80%; text-align:center; color: #1b5e20; z-index: 5; }
+    #topSpace { position: relative; height:220px; margin-bottom:50px; background: linear-gradient(90deg, #fdfbf7, #fffdd0, #fdfbf7); margin: -25px -25px 40px -25px; padding: 20px; border-radius: 12px 12px 0 0; border-bottom: 2px solid #a5d6a7; }
     
-    /* --- YAHAN BADLAV KIYA GAYA HAI: Photo Box ko thoda neeche kiya gaya hai --- */
-    #photoBox { position: absolute; top: 60px; right: 15px; width:140px; height:160px; border:2px solid #2e7d32; background: #fff; display:flex; align-items:center; justify-content:center; z-index: 10; }
-    #photoBox img { width:100%; height:100%; object-fit:cover; display:none; }
-    #logoContainer { position: absolute; left: 10px; top: 40px; width: 130px; height: 130px; z-index: 10; }
+    .reg-no { position: absolute; top: 10px; font-size: 14px; color: #2e7d32; }
+    .urdu-label { font-family: "Urdu Typesetting", serif; font-size: 24px; color: #1b5e20; }
+    #headerDraggable { text-align:center; color: #1b5e20; }
+    
+    #photoBox { position: absolute; top: 60px; right: 15px; width:140px; height:160px; border:2px solid #2e7d32; background: #fff; display:flex; align-items:center; justify-content:center; }
+    #photoBox img { width:100%; height:100%; object-fit:cover; }
     
     .row { display:flex; gap:15px; margin-bottom:12px; align-items:center; color: #1e5631; }
-    input { font-size:18px; font-weight:800; padding:5px; border:1.5px solid #1e5631; border-radius:4px; background: #f9fff9; }
+    input { font-size:18px; font-weight:800; padding:5px; border:1.5px solid #1e5631; border-radius:4px; background: #f9fff9; color: black !important; }
     
-    .student input, .mother input { width:300px; }
-    .father { flex-grow: 1; display: flex; align-items: center; gap: 5px; }
-    .father input { flex-grow: 1; }
-    .address-row { display: flex; align-items: center; gap: 5px; width: 100%; }
-    .address-row input { flex-grow: 1; }
-
     table { width:100%; border-collapse:collapse; margin-top:20px; background:white; border: 2px solid #1e5631; }
-    th, td { border:1.5px solid #1e5631; padding:8px; text-align:center; font-size:18px; }
-    
-    th { background: #FFFDD0 !important; color: #000 !important; border-bottom: 3px solid #1e5631; } 
-    .cream-bg { background: #FFFDD0 !important; }
+    th, td { border:1.5px solid #1e5631; padding:8px; text-align:center; font-size:18px; color: black; }
+    th { background: #FFFDD0; }
 
-    #resultBox { margin:20px auto; width:70%; padding:12px; text-align:center; font-size:24px; font-weight:900; background: #fdfbf7; border:2px solid #1b5e20; border-radius:10px; display: flex; justify-content: center; gap: 40px; align-items: center; color: #1b5e20; }
-    .status-label { padding: 2px 20px; border-radius: 5px; border: 2px solid transparent; color: #000; opacity: 0.2; }
-    .status-active { border: 2px solid #1b5e20; opacity: 1; background: #fff; }
+    #resultBox { margin:20px auto; width:70%; padding:12px; text-align:center; font-size:24px; font-weight:900; border:2px solid #1b5e20; border-radius:10px; display: flex; justify-content: center; gap: 40px; color: #1b5e20; }
+    .status-label { opacity: 0.2; }
+    .status-active { opacity: 1; border-bottom: 3px solid #1b5e20; }
     
-    .footer-sign { margin-top: 50px; display: flex; justify-content: space-between; padding: 0 40px; color: #1e5631; }
-    .controls { text-align:center; margin-top:20px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-    .btn { padding: 12px 25px; font-size: 14px; font-weight: bold; border-radius: 5px; cursor: pointer; border: none; color: white; transition: 0.3s; }
-    
-    #savedListSection { width:950px; margin: 40px auto; background: white; padding: 20px; border-radius: 10px; border: 3px solid #1e5631; }
-    .action-btn { border: none; padding: 5px 10px; cursor: pointer; color: white; font-weight: bold; border-radius: 3px; margin: 0 2px; }
+    .controls { text-align:center; margin-top:10px; display: flex; justify-content: center; gap: 10px; }
+    .btn { padding: 10px 20px; border-radius: 5px; cursor: pointer; border: none; color: white; font-weight: bold; }
 
-    @media print {
-        #photoUpload, .controls, #savedListSection {
-            display: none !important;
-        }
-        body { background: none; padding: 0; }
-        #card { border: none; box-shadow: none; margin: 0; }
-    }
+    @media print { .controls { display: none !important; } #card { transform: scale(1); border:none; } }
 </style>
 </head>
 <body>
 
 <div id="card">
     <div id="topSpace">
-        <div class="reg-no" style="left: 19px;">Reg. No: <input id="regNo" style="border:none; background:transparent; width:100px; font-size:18px;"></div>
-        <div class="reg-no urdu-label" style="right: 19px; direction: rtl; font-weight: 900;">رکنیت نمبر: <input id="udise" style="border:none; background:transparent; width:120px; font-size:20px; text-align:right; font-weight: 900; color: #1b5e20;"></div>
+        <div class="reg-no" style="left: 19px;">Reg. No: <input id="regNo" readonly style="border:none; background:transparent;"></div>
+        <div class="reg-no urdu-label" style="right: 19px; direction: rtl;">رکنیت نمبر: <input id="udise" readonly style="border:none; background:transparent; text-align:right;"></div>
         
-        <div id="logoContainer"><img src="C:\Users\assf\Desktop\logoschool.png" alt="Logo" style="width: 100%; height: 100%; object-fit: contain;"></div>
         <div id="headerDraggable">
-            <img src="C:\Users\assf\Desktop\HTML\MADRASA NAME LOGO.png" alt="Header" style="width: 70%; max-width: 680px;">
-            <div style="font-size:28px; font-weight: 800; margin-top:-10px; color:#1b5e20;">MADARSA ARABIA NOORUL ULOOM</div>
-            <div style="font-size:20px; color:#1b5e20;">Karma Khan, Distt: Sant Kabir Nagar (U.P.)</div>
-            <div style="font-size:25px; margin-top:5px; background: #FFFDD0; color: #000; display: inline-block; padding: 2px 25px; border-radius: 20px; border: 1px solid #1e5631;">Report Card (Yearly) - 2026</div>
+            <h1 style="margin:0; font-size:35px;">MADARSA ARABIA NOORUL ULOOM</h1>
+            <p style="margin:0; font-size:18px;">Karma Khan, Distt: Sant Kabir Nagar (U.P.)</p>
+            <div style="font-size:22px; margin-top:10px; background: #FFFDD0; padding: 5px 20px; border: 1px solid #1e5631; display:inline-block; border-radius:20px;">Report Card - 2026</div>
         </div>
-        <div id="photoBox"><img id="photoPreview"><span id="photoText" style="color:#2e7d32">Photo</span></div>
+        <div id="photoBox"><img id="photoPreview" src="https://via.placeholder.com/140x160?text=Student+Photo"></div>
     </div>
     
-    <input type="file" id="photoUpload" accept="image/*" data-html2canvas-ignore="true" style="position: absolute; right: 25px; top: 245px; font-size:11px; width:140px;">
-
     <div class="row">
-        <div class="student">Student Name: <input id="sname"></div>
-        <div class="father">Father Name: <input id="fname"></div>
+        <div>Student Name: <input id="sname" readonly style="width:300px;"></div>
+        <div style="flex-grow:1">Father Name: <input id="fname" readonly style="width:100%;"></div>
     </div>
     <div class="row">
-        <div class="mother">Mother Name: <input id="mname"></div>
-        <div style="display: flex; align-items: center; gap: 5px;">D.O.B: <input id="dob" style="width: 115px;"></div>
-        <div style="display: flex; align-items: center; gap: 5px;">Class: <input id="sclass" style="width: 70px;"></div>
-        <div style="display: flex; align-items: center; gap: 5px;">Roll No: <input id="rollno" style="width: 70px;"></div>
+        <div>Mother Name: <input id="mname" readonly style="width:250px;"></div>
+        <div>D.O.B: <input id="dob" readonly style="width:130px;"></div>
+        <div>Class: <input id="sclass" readonly style="width:80px;"></div>
+        <div>Roll: <input id="rollno" readonly style="width:80px;"></div>
     </div>
-    <div class="row"><div class="address-row">Address: <input id="address"></div></div>
 
     <table>
-        <thead><tr><th>Subject</th><th>Max</th><th>Marks Obtained</th></tr></thead>
-        <tbody id="markSheet"></tbody>
+        <thead><tr><th>Subject</th><th>Max</th><th>Obtained</th></tr></thead>
+        <tbody id="markSheet">
+            </tbody>
         <tfoot>
             <tr style="background:#f9fff9"><th>Total</th><th>1000</th><th id="total">0</th></tr>
             <tr style="background:#f9fff9"><th>Percentage</th><th colspan="2" id="percent">0%</th></tr>
-            <tr class="cream-bg"><th style="border-top: 2px solid #1e5631;">RANK</th><th colspan="2" id="rank" style="font-size:20px; border-top: 2px solid #1e5631;">-</th></tr>
         </tfoot>
     </table>
 
     <div id="resultBox">
         <span>RESULT:</span>
-        <span id="passLabel" class="status-label status-active">PASS ✓</span>
+        <span id="passLabel" class="status-label">PASS ✓</span>
         <span id="failLabel" class="status-label">FAIL ✗</span>
     </div>
 
-    <div class="footer-sign">
+    <div class="footer-sign" style="display:flex; justify-content:space-between; margin-top:40px;">
         <div>Principal Signature: __________________</div>
-        <div>Stamp:________________________</div>
+        <div>Stamp: __________________</div>
     </div>
 </div>
 
 <div class="controls">
-    <button class="btn" onclick="saveAndRank()" style="background: #27ae60;">SAVE & CALCULATE RANK</button>
-    <button class="btn" onclick="downloadPDF()" style="background: #c0392b;">PDF</button>
-    <button class="btn" onclick="downloadImage('jpeg')" style="background: #d35400;">JPG</button>
-    <button class="btn" onclick="window.print()" style="background: #2980b9;">PRINT</button>
-    <button class="btn" onclick="clearAll()" style="background: #7f8c8d;">CLEAR NEW</button>
-</div>
-
-<div id="savedListSection">
-    <h2 style="color: #1e5631; text-align: center;">Saved Records (Bachon ki List)</h2>
-    <table id="recordsTable">
-        <thead>
-            <tr class="cream-bg"><th>Roll No</th><th>Name</th><th>Total Marks</th><th>Rank</th><th>Action</th></tr>
-        </thead>
-        <tbody id="recordsBody"></tbody>
-    </table>
+    <button class="btn" onclick="window.print()" style="background: #2980b9;">PRINT CARD</button>
+    <button class="btn" onclick="window.location.href='index.html'" style="background: #7f8c8d;">BACK TO HOME</button>
 </div>
 
 <script>
-let subjects=["Quran","Hifz","Deeniyat","Urdu","English","Hindi","Science","Social Science","Math","Dua & Kalma"];
-let markSheet = document.getElementById("markSheet");
+const subjects = ["Quran", "Hifz", "Deeniyat", "Urdu", "English", "Hindi", "Science", "S. Science", "Math", "Dua"];
 
-subjects.forEach((s,i)=>{
-    markSheet.innerHTML += `<tr><td>${s}</td><td>100</td><td><input class="mark" id="m${i}" oninput="calculate()" style="width:80px; text-align:center; border:none; font-weight:800; background:transparent; font-size:18px;"></td></tr>`;
-});
-
-function calculate(){
-    let t=0;
-    for(let i=0; i<subjects.length; i++){
-        let val = parseInt(document.getElementById("m"+i).value) || 0;
-        t += val;
-    }
-    document.getElementById("total").innerText = t;
-    document.getElementById("percent").innerText = (t / subjects.length).toFixed(2) + "%";
-    if(t >= 330) {
-        document.getElementById("passLabel").classList.add("status-active");
-        document.getElementById("failLabel").classList.remove("status-active");
+// Modal loading logic
+window.onload = function() {
+    const params = new URLSearchParams(window.location.search);
+    const roll = params.get('roll');
+    if(roll) {
+        fetchStudentData(roll);
     } else {
-        document.getElementById("failLabel").classList.add("status-active");
-        document.getElementById("passLabel").classList.remove("status-active");
+        alert("Kripya Roll Number Dashboard se daalein");
+        window.location.href = 'index.html';
     }
-}
+};
 
-function updateRecordsTable() {
-    let students = JSON.parse(localStorage.getItem("madarsa_records") || "[]");
-    students.sort((a, b) => b.total - a.total);
-    let html = "";
-    students.forEach((s, index) => {
-        html += `<tr>
-            <td>${s.roll}</td>
-            <td>${s.name}</td>
-            <td>${s.total}</td>
-            <td>${index + 1}</td>
-            <td>
-                <button class="action-btn" onclick="editRecord('${s.roll}')" style="background:#2980b9;">Edit</button>
-                <button class="action-btn" onclick="deleteRecord('${s.roll}')" style="background:#c0392b;">Delete</button>
-            </td>
-        </tr>`;
-    });
-    document.getElementById("recordsBody").innerHTML = html;
-}
+async function fetchStudentData(roll) {
+    // 1. APNI GOOGLE SHEET KA "PUBLISH TO WEB" CSV LINK YAHAN PASTE KAREIN
+    const sheetUrl = 'YAHAN_APNA_CSV_LINK_DAALEIN';
 
-function editRecord(roll) {
-    let students = JSON.parse(localStorage.getItem("madarsa_records") || "[]");
-    let s = students.find(item => item.roll === roll);
-    if(s) {
-        document.getElementById("sname").value = s.name;
-        document.getElementById("fname").value = s.fatherName || "";
-        document.getElementById("mname").value = s.motherName || "";
-        document.getElementById("dob").value = s.dob || "";
-        document.getElementById("sclass").value = s.class || "";
-        document.getElementById("rollno").value = s.roll;
-        document.getElementById("address").value = s.address || "";
-        document.getElementById("regNo").value = s.regNo || "";
-        document.getElementById("udise").value = s.udise || "";
-        
-        if(s.marks) {
-            s.marks.forEach((val, i) => {
-                let input = document.getElementById("m"+i);
-                if(input) input.value = val;
+    try {
+        const response = await fetch(sheetUrl);
+        const data = await response.text();
+        const rows = data.split('\n').map(row => row.split(','));
+
+        // Roll Number dhoondein (Maana ki Roll No column 0 mein hai)
+        const student = rows.find(r => r[0].trim() === roll.trim());
+
+        if(student) {
+            // Personal Details (Mapping columns to IDs)
+            document.getElementById('rollno').value = student[0];
+            document.getElementById('sname').value = student[1];
+            document.getElementById('fname').value = student[2];
+            document.getElementById('mname').value = student[3];
+            document.getElementById('sclass').value = student[4];
+            document.getElementById('dob').value = student[15] || ''; // DOB column
+            document.getElementById('regNo').value = student[16] || ''; 
+
+            // Marks Filling (Maana ki marks column index 5 se shuru hain)
+            let tableBody = document.getElementById('markSheet');
+            let totalMarks = 0;
+            tableBody.innerHTML = "";
+
+            subjects.forEach((sub, i) => {
+                let m = parseInt(student[5 + i]) || 0;
+                totalMarks += m;
+                tableBody.innerHTML += `<tr><td>${sub}</td><td>100</td><td>${m}</td></tr>`;
             });
+
+            // Final Calculation
+            document.getElementById('total').innerText = totalMarks;
+            let per = (totalMarks / subjects.length).toFixed(2);
+            document.getElementById('percent').innerText = per + "%";
+
+            if(totalMarks >= 330) {
+                document.getElementById('passLabel').classList.add('status-active');
+            } else {
+                document.getElementById('failLabel').classList.add('status-active');
+            }
+        } else {
+            alert("Record nahi mila! Roll Number: " + roll);
+            window.location.href = 'index.html';
         }
-        calculate();
-        window.scrollTo(0,0);
+    } catch (e) {
+        alert("Data load karne mein galti hui. Check internet connection.");
     }
 }
-
-function deleteRecord(roll) {
-    if(confirm("Kya aap is record ko delete karna chahte hain?")) {
-        let students = JSON.parse(localStorage.getItem("madarsa_records") || "[]");
-        students = students.filter(s => s.roll !== roll);
-        localStorage.setItem("madarsa_records", JSON.stringify(students));
-        updateRecordsTable();
-    }
-}
-
-function saveAndRank(){
-    let roll = document.getElementById("rollno").value;
-    let name = document.getElementById("sname").value;
-    let total = parseInt(document.getElementById("total").innerText);
-    
-    if(!roll || !name) { alert("Roll No aur Name zaroori hai!"); return; }
-
-    let currentMarks = [];
-    for(let i=0; i<subjects.length; i++) {
-        currentMarks.push(document.getElementById("m"+i).value);
-    }
-
-    let students = JSON.parse(localStorage.getItem("madarsa_records") || "[]");
-    let idx = students.findIndex(s => s.roll === roll);
-    
-    let studentData = { 
-        roll: roll, 
-        name: name, 
-        total: total,
-        fatherName: document.getElementById("fname").value,
-        motherName: document.getElementById("mname").value,
-        dob: document.getElementById("dob").value,
-        class: document.getElementById("sclass").value,
-        address: document.getElementById("address").value,
-        regNo: document.getElementById("regNo").value,
-        udise: document.getElementById("udise").value,
-        marks: currentMarks
-    };
-
-    if(idx > -1) { students[idx] = studentData; } 
-    else { students.push(studentData); }
-
-    students.sort((a, b) => b.total - a.total);
-    localStorage.setItem("madarsa_records", JSON.stringify(students));
-    
-    updateRecordsTable();
-    alert("Record Saved Successfully!");
-}
-
-async function downloadPDF(){
-    const { jsPDF } = window.jspdf;
-    const canvas = await html2canvas(document.querySelector("#card"), { 
-        scale: 2, 
-        useCORS: true,
-        ignoreElements: (el) => el.id === "photoUpload" 
-    });
-    const imgData = canvas.toDataURL('image/jpeg', 1.0);
-    const pdf = new jsPDF("p", "mm", "a4");
-    pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
-    pdf.save("Result.pdf");
-}
-
-async function downloadImage(fmt){
-    const canvas = await html2canvas(document.querySelector("#card"), { 
-        scale: 2,
-        ignoreElements: (el) => el.id === "photoUpload"
-    });
-    const link = document.createElement('a');
-    link.download = "Result." + fmt;
-    link.href = canvas.toDataURL("image/" + fmt);
-    link.click();
-}
-
-function clearAll(){
-    document.querySelectorAll('input').forEach(i => { if(i.id !== "regNo" && i.id !== "udise") i.value = ""; });
-    document.getElementById("total").innerText = "0";
-    document.getElementById("percent").innerText = "0%";
-    document.getElementById("rank").innerText = "-";
-}
-
-document.getElementById("photoUpload").addEventListener("change", function(e){
-    let img = document.getElementById("photoPreview");
-    if(e.target.files[0]){
-        img.src = URL.createObjectURL(e.target.files[0]);
-        img.style.display = "block";
-        document.getElementById("photoText").style.display = "none";
-    }
-});
-
-updateRecordsTable();
 </script>
 </body>
-  </html>
+</html>

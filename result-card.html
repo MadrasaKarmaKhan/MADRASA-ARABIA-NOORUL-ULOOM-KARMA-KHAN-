@@ -4,48 +4,46 @@
     <meta charset="UTF-8">
     <title>Madarsa Result Card</title>
     <style>
-        body { padding: 20px; font-family: sans-serif; background: #f0f0f0; }
-        #card { width: 800px; margin: auto; background: white; border: 4px solid #1b5e20; padding: 30px; position: relative; }
-        .header { text-align: center; color: #1b5e20; border-bottom: 2px solid #1b5e20; padding-bottom: 10px; }
-        .exam-tag { background: #fffdd0; padding: 5px 20px; border-radius: 20px; border: 1px solid #1b5e20; font-weight: bold; display: inline-block; margin-top: 10px; }
-        .info-table { width: 100%; margin: 20px 0; }
-        .info-table td { padding: 5px; font-weight: bold; }
-        table.marks { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        table.marks th, table.marks td { border: 1px solid #1b5e20; padding: 10px; text-align: center; }
-        .footer { margin-top: 50px; display: flex; justify-content: space-between; }
+        body { font-family: sans-serif; background: #e0e0e0; padding: 20px; }
+        #card { width: 850px; margin: auto; background: white; border: 8px double #1b5e20; padding: 40px; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
+        .header { text-align: center; border-bottom: 2px solid #1b5e20; margin-bottom: 20px; padding-bottom: 10px; }
+        .exam-tag { background: #1b5e20; color: white; padding: 5px 20px; border-radius: 50px; font-weight: bold; display: inline-block; margin: 10px 0; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #1b5e20; padding: 12px; text-align: center; }
+        th { background: #f0f0f0; }
+        .footer { display: flex; justify-content: space-between; margin-top: 60px; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div id="card">
     <div class="header">
-        <h1 style="margin:0;">MADARSA ARABIA NOORUL ULOOM</h1>
+        <h1 style="margin:0; font-size: 30px;">MADARSA ARABIA NOORUL ULOOM</h1>
         <p>Karma Khan, Sant Kabir Nagar (U.P.)</p>
-        <div class="exam-tag" id="examHeading">Report Card</div>
+        <div class="exam-tag" id="examHeading">EXAM RESULT</div>
     </div>
 
-    <table class="info-table">
-        <tr>
-            <td>Name: <span id="sname">...</span></td>
-            <td>Father: <span id="fname">...</span></td>
-        </tr>
-        <tr>
-            <td>Roll No: <span id="roll">...</span></td>
-            <td>Class: <span id="class">...</span></td>
-            <td>Year: <span id="year">...</span></td>
-        </tr>
-    </table>
+    <div class="info-grid">
+        <div>Student Name: <span id="sname">...</span></div>
+        <div>Father Name: <span id="fname">...</span></div>
+        <div>Roll No: <span id="roll">...</span></div>
+        <div>Class: <span id="class">...</span></div>
+    </div>
 
-    <table class="marks">
+    <table>
         <thead>
-            <tr style="background:#e8f5e9;"><th>Subject</th><th>Max Marks</th><th>Obtained</th></tr>
+            <tr><th>Subject</th><th>Max Marks</th><th>Obtained</th></tr>
         </thead>
         <tbody id="markSheet"></tbody>
         <tfoot>
-            <tr style="font-weight:bold;"><td>TOTAL</td><td>1000</td><td id="total">0</td></tr>
-            <tr style="font-weight:bold;"><td>RESULT</td><td colspan="2" id="resultStatus">...</td></tr>
+            <tr style="font-weight: bold; background: #e8f5e9;">
+                <td>TOTAL</td><td>1000</td><td id="totalMarks">0</td>
+            </tr>
         </tfoot>
     </table>
+
+    <div id="status" style="text-align:center; font-size:24px; font-weight:bold; margin-top:20px;"></div>
 
     <div class="footer">
         <div>Principal Signature</div>
@@ -58,50 +56,55 @@
         const params = new URLSearchParams(window.location.search);
         const roll = params.get('roll');
         const type = params.get('type');
-        const sClass = params.get('class');
-        const sYear = params.get('year');
+        const month = params.get('month');
+        const cls = params.get('class');
 
-        document.getElementById('examHeading').innerText = `${type} Examination - ${sYear}`;
+        let heading = type === "Monthly" ? `${month} Monthly Exam` : `${type} Exam`;
+        document.getElementById('examHeading').innerText = heading + " - 2026";
         document.getElementById('roll').innerText = roll;
-        document.getElementById('class').innerText = sClass;
-        document.getElementById('year').innerText = sYear;
+        document.getElementById('class').innerText = cls;
 
-        fetchData(roll, type);
+        loadData(roll, type, month, cls);
     };
 
-    async function fetchData(roll, type) {
-        // YAHAN APNI GOOGLE SHEET KA CSV LINK DAALEIN
+    async function loadData(roll, type, month, cls) {
+        // Yahan apni Google Sheet ka CSV link paste karein
         const sheetUrl = 'YOUR_CSV_LINK_HERE';
-        
+
         try {
             const res = await fetch(sheetUrl);
             const text = await res.text();
             const rows = text.split('\n').map(r => r.split(','));
-            
-            // Student ko dhoondein
-            const student = rows.find(r => r[0].trim() === roll.trim());
-            
+
+            // Match Logic: Roll=Col0, Class=Col3, ExamType=Col4, Month=Col5
+            const student = rows.find(r => 
+                r[0].trim() === roll.trim() && 
+                r[4].trim() === type.trim() &&
+                (type !== "Monthly" || r[5].trim() === month.trim()) &&
+                r[3].trim() === cls.trim()
+            );
+
             if(student) {
                 document.getElementById('sname').innerText = student[1];
                 document.getElementById('fname').innerText = student[2];
                 
-                let subjects = ["Quran","Hifz","Deeniyat","Urdu","English","Hindi","Science","S. Science","Math","Dua"];
+                const subjects = ["Quran","Hifz","Deeniyat","Urdu","English","Hindi","Science","S. Science","Math","Dua"];
                 let total = 0;
                 let html = "";
-                
                 subjects.forEach((s, i) => {
-                    let mark = parseInt(student[5+i]) || 0;
-                    total += mark;
-                    html += `<tr><td>${s}</td><td>100</td><td>${mark}</td></tr>`;
+                    let m = parseInt(student[6 + i]) || 0; // Marks Col 6 se shuru hain
+                    total += m;
+                    html += `<tr><td>${s}</td><td>100</td><td>${m}</td></tr>`;
                 });
-                
+
                 document.getElementById('markSheet').innerHTML = html;
-                document.getElementById('total').innerText = total;
-                document.getElementById('resultStatus').innerText = total >= 330 ? "PASS" : "FAIL";
+                document.getElementById('totalMarks').innerText = total;
+                document.getElementById('status').innerText = total >= 330 ? "PASSED ✓" : "FAILED ✗";
+                document.getElementById('status').style.color = total >= 330 ? "green" : "red";
             } else {
-                alert("Data nahi mila!");
+                alert("Data nahi mila! Sheet check karein.");
             }
-        } catch(e) { console.error(e); }
+        } catch(e) { console.log("Error loading data..."); }
     }
 </script>
 </body>

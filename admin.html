@@ -18,7 +18,8 @@
         .marks-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; background: #f9fdf9; padding: 20px; border: 1px solid #e0eee0; border-radius: 10px; }
         .btn { background: #1e5631; color: white; border: none; padding: 16px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 18px; margin-top: 20px; }
         .btn:hover { background: #143d22; }
-        textarea { width: 100%; height: 100px; margin-top: 10px; font-family: monospace; padding: 10px; border-radius: 6px; border: 2px dashed #1e5631; background: #fff; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+        #statusMessage { text-align: center; margin-top: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -33,65 +34,64 @@
 <div id="adminDashboard" class="admin-container hidden">
     <h2>Student Result Entry</h2>
     
-    <div class="form-section">
-        <h3>Personal Information</h3>
-        <label>Student Full Name</label>
-        <input type="text" id="name" placeholder="Name">
-        
-        <div style="display: flex; gap: 15px;">
-            <div style="flex:1"><label>Father's Name</label><input type="text" id="fname" placeholder="Father's Name"></div>
-            <div style="flex:1"><label>Mother's Name</label><input type="text" id="mname" placeholder="Mother's Name"></div>
-        </div>
-
-        <div style="display: flex; gap: 15px;">
-            <div style="flex:1"><label>Roll Number</label><input type="text" id="roll" placeholder="Roll No"></div>
-            <div style="flex:1"><label>Date of Birth</label><input type="date" id="dob"></div>
-        </div>
-
-        <div style="display: flex; gap: 15px;">
-            <div style="flex:1">
-                <label>Class</label>
-                <select id="class">
-                    <option value="LKG">LKG</option><option value="UKG">UKG</option>
-                    <option value="1st">1st</option><option value="2nd">2nd</option>
-                    <option value="3rd">3rd</option><option value="4th">4th</option>
-                    <option value="5th">5th</option>
-                </select>
+    <form id="resultForm">
+        <div class="form-section">
+            <h3>Personal Information</h3>
+            <label>Student Full Name</label>
+            <input type="text" id="name" name="name" placeholder="Name" required>
+            
+            <div style="display: flex; gap: 15px;">
+                <div style="flex:1"><label>Father's Name</label><input type="text" id="fname" name="fname" placeholder="Father's Name"></div>
+                <div style="flex:1"><label>Mother's Name</label><input type="text" id="mname" name="mname" placeholder="Mother's Name"></div>
             </div>
-            <div style="flex:1"><label>Attendance (%)</label><input type="number" id="attendance" placeholder="e.g. 98"></div>
+
+            <div style="display: flex; gap: 15px;">
+                <div style="flex:1"><label>Roll Number</label><input type="text" id="roll" name="roll" placeholder="Roll No" required></div>
+                <div style="flex:1"><label>Date of Birth</label><input type="date" id="dob" name="dob"></div>
+            </div>
+
+            <div style="display: flex; gap: 15px;">
+                <div style="flex:1">
+                    <label>Class</label>
+                    <select id="class" name="class">
+                        <option value="LKG">LKG</option><option value="UKG">UKG</option>
+                        <option value="1st">1st</option><option value="2nd">2nd</option>
+                        <option value="3rd">3rd</option><option value="4th">4th</option>
+                        <option value="5th">5th</option>
+                    </select>
+                </div>
+                <div style="flex:1"><label>Attendance (%)</label><input type="number" id="attendance" name="attendance" placeholder="e.g. 98"></div>
+            </div>
+
+            <label>Full Address</label>
+            <input type="text" id="address" name="address" placeholder="Address">
         </div>
 
-        <label>Full Address</label>
-        <input type="text" id="address" placeholder="Address">
-    </div>
-
-    <div class="form-section">
-        <h3>Marks Distribution (Max 100)</h3>
-        <div class="marks-grid">
-            <div><label>Quran (Nazra)</label><input type="number" id="m1" value="0"></div>
-            <div><label>Hifz</label><input type="number" id="m2" value="0"></div>
-            <div><label>Deeniyat</label><input type="number" id="m3" value="0"></div>
-            <div><label>Urdu</label><input type="number" id="m4" value="0"></div>
-            <div><label>English</label><input type="number" id="m5" value="0"></div>
-            <div><label>Hindi</label><input type="number" id="m6" value="0"></div>
-            <div><label>Science</label><input type="number" id="m7" value="0"></div>
-            <div><label>S. Science</label><input type="number" id="m8" value="0"></div>
-            <div><label>Mathematics</label><input type="number" id="m9" value="0"></div>
-            <div><label>Dua & Kalma</label><input type="number" id="m10" value="0"></div>
+        <div class="form-section">
+            <h3>Marks Distribution (Max 100)</h3>
+            <div class="marks-grid">
+                <div><label>Quran (Nazra)</label><input type="number" id="m1" name="m1" value="0"></div>
+                <div><label>Hifz</label><input type="number" id="m2" name="m2" value="0"></div>
+                <div><label>Deeniyat</label><input type="number" id="m3" name="m3" value="0"></div>
+                <div><label>Urdu</label><input type="number" id="m4" name="m4" value="0"></div>
+                <div><label>English</label><input type="number" id="m5" name="m5" value="0"></div>
+                <div><label>Hindi</label><input type="number" id="m6" name="m6" value="0"></div>
+                <div><label>Science</label><input type="number" id="m7" name="m7" value="0"></div>
+                <div><label>S. Science</label><input type="number" id="m8" name="m8" value="0"></div>
+                <div><label>Mathematics</label><input type="number" id="m9" name="m9" value="0"></div>
+                <div><label>Dua & Kalma</label><input type="number" id="m10" name="m10" value="0"></div>
+            </div>
         </div>
-    </div>
 
-    <button class="btn" onclick="generateData()">GENERATE DATA FOR SHEET</button>
+        <button type="button" id="submitBtn" class="btn" onclick="sendData()">SUBMIT TO GOOGLE SHEET</button>
+    </form>
     
-    <div id="output" class="hidden" style="margin-top:20px;">
-        <label>Niche wali line copy karein aur Google Sheet mein paste karein:</label>
-        <textarea id="resultText" readonly></textarea>
-        <p style="font-size:12px; color:red; margin-top:5px;">Note: Har column ka order dhyan se check karein.</p>
-    </div>
+    <div id="statusMessage"></div>
 </div>
 
 <script>
-    const CORRECT_PASSWORD = "noor"; // LOGIN PASSWORD
+    const CORRECT_PASSWORD = "noor"; 
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx15zJLJHdRuQmf0_bIi1xZtLflKvStsu_vbp0Zeet8CViqVxcdWfHE1p09kjv6fHkE/exec";
 
     function checkLogin() {
         const pass = document.getElementById('adminPass').value;
@@ -103,31 +103,46 @@
         }
     }
 
-    function generateData() {
-        // Collect all fields
-        const row = [
-            document.getElementById('roll').value,      // Col A
-            document.getElementById('name').value,      // Col B
-            document.getElementById('fname').value,     // Col C
-            document.getElementById('mname').value,     // Col D
-            document.getElementById('class').value,     // Col E
-            document.getElementById('m1').value,        // Col F
-            document.getElementById('m2').value,        // Col G
-            document.getElementById('m3').value,        // Col H
-            document.getElementById('m4').value,        // Col I
-            document.getElementById('m5').value,        // Col J
-            document.getElementById('m6').value,        // Col K
-            document.getElementById('m7').value,        // Col L
-            document.getElementById('m8').value,        // Col M
-            document.getElementById('m9').value,        // Col N
-            document.getElementById('m10').value,       // Col O
-            document.getElementById('dob').value,       // Col P
-            document.getElementById('attendance').value,// Col Q
-            document.getElementById('address').value    // Col R
-        ];
+    async function sendData() {
+        const btn = document.getElementById('submitBtn');
+        const status = document.getElementById('statusMessage');
         
-        document.getElementById('output').classList.remove('hidden');
-        document.getElementById('resultText').value = row.join(',');
+        // Basic Validation
+        if(!document.getElementById('roll').value || !document.getElementById('name').value) {
+            alert("Roll Number aur Name zaroori hai!");
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerText = "Bheja ja raha hai...";
+        status.innerHTML = "Processing...";
+        status.style.color = "blue";
+
+        const formData = new FormData(document.getElementById('resultForm'));
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+            // Google Apps Script ko data bhejna
+            await fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors', 
+                cache: 'no-cache',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            status.innerHTML = "✅ Data kamyabi se Sheet mein save ho gaya!";
+            status.style.color = "green";
+            document.getElementById('resultForm').reset();
+            
+        } catch (error) {
+            console.error('Error!', error);
+            status.innerHTML = "❌ Kuch galti hui! Dubara koshish karein.";
+            status.style.color = "red";
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "SUBMIT TO GOOGLE SHEET";
+        }
     }
 </script>
 </body>

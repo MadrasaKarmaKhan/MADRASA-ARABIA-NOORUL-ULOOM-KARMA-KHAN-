@@ -3,110 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Madarsa Noorul Uloom Portal</title>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Result Portal - Madarsa Arabia Noorul Uloom</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        :root { --primary: #1b5e20; --bg: #f4f7f6; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); }
-        header { background: white; padding: 15px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
-        .menu-btn { cursor: pointer; color: var(--primary); font-size: 30px; margin-right: 15px; }
-        .sidebar { position: fixed; left: -300px; top: 0; width: 280px; height: 100%; background: white; transition: 0.3s; box-shadow: 2px 0 10px rgba(0,0,0,0.2); z-index: 2000; }
-        .sidebar.active { left: 0; }
-        .sidebar-header { background: var(--primary); color: white; padding: 20px; text-align: center; }
-        .sidebar a { display: flex; align-items: center; padding: 15px 20px; color: #333; text-decoration: none; border-bottom: 1px solid #eee; }
-        .overlay { display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1500; }
-        
-        .container { padding: 20px; max-width: 450px; margin: auto; }
-        .card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 6px solid var(--primary); }
-        label { display: block; text-align: left; font-weight: bold; font-size: 13px; color: #444; margin-top: 10px; }
-        select, input { width: 100%; padding: 12px; margin: 5px 0 15px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; box-sizing: border-box; }
-        .btn { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 18px; transition: 0.3s; }
-        .btn:hover { background: #0e3d14; }
-        #monthBox { display: none; }
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #1e5631, #a4be7b); margin: 0; padding: 20px; color: #333; }
+        .search-card { background: white; max-width: 450px; margin: 50px auto; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center; }
+        input { width: 90%; padding: 12px; margin: 10px 0; border: 2px solid #1e5631; border-radius: 8px; font-size: 16px; }
+        .btn { background: #1e5631; color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; width: 100%; transition: 0.3s; }
+        .btn:hover { background: #2e7d32; }
+
+        /* Result Card Styling */
+        #result-display { display: none; margin-top: 30px; }
+        #card { width: 900px; margin: auto; background: white; padding: 25px; border: 5px solid #1e5631; position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.3); border-radius: 10px; }
+        #topSpace { background: #FFFDD0; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 20px; border-bottom: 3px solid #1e5631; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1.5px solid #1e5631; padding: 10px; text-align: center; font-weight: bold; }
+        th { background: #FFFDD0; }
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 10px; color: #1e5631; font-size: 18px; }
+        .status-pass { color: green; border: 2px solid green; padding: 5px 20px; border-radius: 5px; }
+        .status-fail { color: red; border: 2px solid red; padding: 5px 20px; border-radius: 5px; }
     </style>
 </head>
 <body>
-    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header"><h3>Noorul Uloom</h3></div>
-        <a href="index.html"><i class="material-icons" style="margin-right:10px">home</i> Home</a>
-        <a href="admin.html"><i class="material-icons" style="margin-right:10px">lock</i> Admin</a>
-    </div>
 
-    <header>
-        <i class="material-icons menu-btn" onclick="toggleMenu()">menu</i>
-        <h1 style="font-size: 18px; color: var(--primary); margin:0;">Result Check Center</h1>
-    </header>
+<div class="search-card" id="search-box">
+    <h2 style="color: #1e5631;">Madarsa Online Result</h2>
+    <p>Apna Roll No aur DOB (01/01/2010) bharein</p>
+    <input type="text" id="roll" placeholder="Roll Number">
+    <input type="text" id="dob" placeholder="Date of Birth (DD/MM/YYYY)">
+    <button class="btn" onclick="fetchResult()">Show Result Card</button>
+</div>
 
-    <div class="container">
-        <div class="card">
-            <h2 style="color: var(--primary); margin-top:0;">Search Result</h2>
-            
-            <label>1. EXAM TYPE</label>
-            <select id="examType" onchange="toggleMonth()">
-                <option value="Yearly">Yearly Exam</option>
-                <option value="Half-Yearly">Half-Yearly Exam</option>
-                <option value="Monthly">Monthly Exam</option>
-            </select>
+<div id="result-display">
+    <div id="card">
+        <div id="topSpace">
+            <h1 style="color:#0000FF; margin:0; font-size: 35px;">MADARSA ARABIA NOORUL ULOOM</h1>
+            <p style="font-size: 20px; color: #0000FF;">Karma Khan, Distt: Sant Kabir Nagar (U.P.)</p>
+            <div style="font-size: 22px; background: white; display: inline-block; padding: 5px 30px; border-radius: 20px; border: 1px solid #1e5631; margin-top: 10px;">Yearly Result Card - 2026</div>
+        </div>
 
-            <div id="monthBox">
-                <label>SELECT MONTH</label>
-                <select id="sMonth">
-                    <option value="January">January</option><option value="February">February</option>
-                    <option value="March">March</option><option value="April">April</option>
-                    <option value="May">May</option><option value="June">June</option>
-                    <option value="July">July</option><option value="August">August</option>
-                    <option value="September">September</option><option value="October">October</option>
-                    <option value="November">November</option><option value="December">December</option>
-                </select>
-            </div>
+        <div class="info-row">
+            <div>Student: <span id="res-name"></span></div>
+            <div>Roll No: <span id="res-roll"></span></div>
+        </div>
+        <div class="info-row">
+            <div>Father: <span id="res-father"></span></div>
+            <div>Class: <span id="res-class"></span></div>
+        </div>
 
-            <label>2. CLASS</label>
-            <select id="sClass">
-                <option value="LKG">LKG</option>
-                <option value="UKG">UKG</option>
-                <option value="Class 1">Class 1</option>
-                <option value="Class 2">Class 2</option>
-                <option value="Class 3">Class 3</option>
-                <option value="Class 4">Class 4</option>
-                <option value="5">Class 5</option> </select>
+        <table id="marksTable">
+            <thead>
+                <tr><th>Subject</th><th>Max</th><th>Obtained</th></tr>
+            </thead>
+            <tbody id="res-body"></tbody>
+            <tfoot>
+                <tr style="background: #f9fff9;"><th>Total</th><th>1000</th><th id="res-total"></th></tr>
+                <tr style="background: #f9fff9;"><th>Percentage</th><th colspan="2" id="res-percent"></th></tr>
+            </tfoot>
+        </table>
 
-            <label>3. STUDENT NAME</label>
-            <input type="text" id="sName" placeholder="Naam bilkul sahi likhein">
+        <div style="text-align: center; margin-top: 30px; font-size: 24px;">
+            RESULT: <span id="res-status"></span>
+        </div>
 
-            <label>4. ROLL NUMBER</label>
-            <input type="text" id="rollNo" placeholder="e.g. 101">
-
-            <label>5. DATE OF BIRTH</label>
-            <input type="date" id="dob">
-            
-            <button class="btn" onclick="checkResult()">DEKHEIN RESULT</button>
+        <div style="display: flex; justify-content: space-between; margin-top: 50px; color: #1e5631;">
+            <div>Principal Signature: ________________</div>
+            <div>Stamp: ________________</div>
         </div>
     </div>
+    <div style="text-align: center; margin-top: 20px;">
+        <button class="btn" onclick="downloadPDF()" style="width: 250px; background: #c0392b;">Download PDF</button>
+        <button class="btn" onclick="location.reload()" style="width: 250px; background: #7f8c8d;">Search Another</button>
+    </div>
+</div>
 
-    <script>
-        function toggleMenu() {
-            document.getElementById('sidebar').classList.toggle('active');
-            var overlay = document.getElementById('overlay');
-            overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
-        }
-        function toggleMonth() {
-            const type = document.getElementById('examType').value;
-            document.getElementById('monthBox').style.display = (type === "Monthly") ? "block" : "none";
-        }
-        function checkResult() {
-            const type = document.getElementById('examType').value;
-            const month = (type === "Monthly") ? document.getElementById('sMonth').value : "None";
-            const cls = document.getElementById('sClass').value;
-            const name = document.getElementById('sName').value.trim().toUpperCase(); // Naam ko Capital mein convert kiya
-            const roll = document.getElementById('rollNo').value.trim();
-            const dob = document.getElementById('dob').value; // Ye automatic YYYY-MM-DD format mein jayega
+<script>
+    // 1. Apna Google Apps Script URL yahan daalein
+    const SCRIPT_URL = "APNA_SCRIPT_URL_YAHAN_DAALEIN";
 
-            if(!name || !roll || !dob) return alert("Kripya saari details bharein!");
-            
-            // Ye data result-card.html ko bheja ja raha hai
-            window.location.href = `result-card.html?roll=${roll}&name=${encodeURIComponent(name)}&dob=${dob}&type=${type}&month=${month}&class=${cls}`;
+    const subjects = ["Quran","Hifz","Deeniyat","Urdu","English","Hindi","Science","Social Science","Math","Dua & Kalma"];
+    const colors = ["#e3f2fd", "#fce4ec", "#e8f5e9", "#fff3e0", "#f3e5f5", "#efebe9", "#e0f2f1", "#fffde7", "#f9fbe7", "#e1f5fe"];
+
+    async function fetchResult() {
+        const roll = document.getElementById('roll').value;
+        const dob = document.getElementById('dob').value;
+        if(!roll || !dob) { alert("Details bharein!"); return; }
+
+        document.getElementById('search-box').innerHTML = "<h2>Loading...</h2>";
+
+        try {
+            const response = await fetch(`${SCRIPT_URL}?roll=${roll}&dob=${dob}`);
+            const s = await response.json();
+
+            if(s === "not_found") {
+                alert("Record nahi mila!");
+                location.reload();
+                return;
+            }
+
+            // Fill Info
+            document.getElementById('res-name').innerText = s.name;
+            document.getElementById('res-roll').innerText = s.roll;
+            document.getElementById('res-father').innerText = s.father;
+            document.getElementById('res-class').innerText = s.class;
+            document.getElementById('res-total').innerText = s.total;
+            document.getElementById('res-percent').innerText = s.percent + "%";
+            document.getElementById('res-status').innerText = s.status;
+            document.getElementById('res-status').className = s.status === "PASS" ? "status-pass" : "status-fail";
+
+            // Fill Subjects
+            let html = "";
+            subjects.forEach((sub, i) => {
+                html += `<tr style="background: ${colors[i]}"><td>${sub}</td><td>100</td><td>${s.marks[i]}</td></tr>`;
+            });
+            document.getElementById('res-body').innerHTML = html;
+
+            document.getElementById('search-box').style.display = "none";
+            document.getElementById('result-display').style.display = "block";
+        } catch (e) {
+            alert("Error! Check internet or URL.");
+            location.reload();
         }
-    </script>
+    }
+
+    async function downloadPDF() {
+        const { jsPDF } = window.jspdf;
+        const canvas = await html2canvas(document.querySelector("#card"), { scale: 2 });
+        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+        const pdf = new jsPDF("p", "mm", "a4");
+        pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+        pdf.save("Result_Card.pdf");
+    }
+</script>
 </body>
 </html>

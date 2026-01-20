@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Your Result - Madarsa Arabia Noorul Uloom</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f0; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .search-container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 90%; max-width: 400px; border-top: 8px solid #1e5631; }
+        h2 { color: #1e5631; text-align: center; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        .btn-search { width: 100%; padding: 12px; background: #1e5631; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn-search:hover { background: #2e7d32; }
+        .error { color: red; font-size: 14px; text-align: center; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="search-container">
+    <h2>Student Result Portal</h2>
+    <div class="form-group">
+        <label>Roll Number</label>
+        <input type="text" id="searchRoll" placeholder="Enter Roll No (e.g. 101)">
+    </div>
+    <div class="form-group">
+        <label>Date of Birth</label>
+        <input type="text" id="searchDob" placeholder="DD/MM/YYYY">
+    </div>
+    <div class="form-group">
+        <label>Exam Type</label>
+        <select id="examType">
+            <option>Yearly Exam - 2026</option>
+            <option>Half Yearly Exam - 2025</option>
+        </select>
+    </div>
+    <button class="btn-search" onclick="findResult()">Find & Download Result</button>
+    <p id="errorMsg" class="error">Record not found! Please check Roll No and DOB.</p>
+</div>
+
+<div id="resultOutput" style="display:none;"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+function findResult() {
+    const roll = document.getElementById('searchRoll').value.trim();
+    const dob = document.getElementById('searchDob').value.trim();
+    const errorMsg = document.getElementById('errorMsg');
+
+    // Data local storage se uthana (Admin page se save hua data)
+    let students = JSON.parse(localStorage.getItem("madarsa_records") || "[]");
+    
+    // Student ko find karna
+    let student = students.find(s => s.roll === roll && s.dob === dob);
+
+    if (student) {
+        errorMsg.style.display = 'none';
+        alert("Result Found! Downloading...");
+        downloadStudentResult(student);
+    } else {
+        errorMsg.style.display = 'block';
+    }
+}
+
+// Ye function student ka result generate karke download kar dega
+async function downloadStudentResult(s) {
+    // Yahan hum aapka purana card layout template mein daal sakte hain
+    // Filhal ye ek basic template use karega
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF("p", "mm", "a4");
+
+    pdf.setFontSize(22);
+    pdf.setTextColor(30, 86, 49);
+    pdf.text("MADARSA ARABIA NOORUL ULOOM", 105, 20, { align: "center" });
+    
+    pdf.setFontSize(14);
+    pdf.setTextColor(0, 0, 0);
+    pdf.text(`Student Name: ${s.name}`, 20, 40);
+    pdf.text(`Father's Name: ${s.fatherName}`, 20, 50);
+    pdf.text(`Roll No: ${s.roll} | Class: ${s.class}`, 20, 60);
+    pdf.text(`Total Marks: ${s.total} / 1000`, 20, 70);
+    pdf.text(`Percentage: ${(s.total/10).toFixed(2)}%`, 20, 80);
+    pdf.text(`Result: ${s.total >= 330 ? "PASS" : "FAIL"}`, 20, 90);
+
+    pdf.save(`Result_${s.name}.pdf`);
+}
+</script>
+
+</body>
+</html>

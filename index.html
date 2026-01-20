@@ -63,11 +63,13 @@
 
             <label>2. CLASS</label>
             <select id="sClass">
-                <option value="LKG">LKG</option><option value="UKG">UKG</option>
-                <option value="Class 1">Class 1</option><option value="Class 2">Class 2</option>
-                <option value="Class 3">Class 3</option><option value="Class 4">Class 4</option>
-                <option value="Class 5">Class 5</option>
-            </select>
+                <option value="LKG">LKG</option>
+                <option value="UKG">UKG</option>
+                <option value="Class 1">Class 1</option>
+                <option value="Class 2">Class 2</option>
+                <option value="Class 3">Class 3</option>
+                <option value="Class 4">Class 4</option>
+                <option value="5">Class 5</option> </select>
 
             <label>3. STUDENT NAME</label>
             <input type="text" id="sName" placeholder="Naam bilkul sahi likhein">
@@ -96,12 +98,13 @@
             const type = document.getElementById('examType').value;
             const month = (type === "Monthly") ? document.getElementById('sMonth').value : "None";
             const cls = document.getElementById('sClass').value;
-            const name = document.getElementById('sName').value.trim();
+            const name = document.getElementById('sName').value.trim().toUpperCase(); // Naam ko Capital mein convert kiya
             const roll = document.getElementById('rollNo').value.trim();
-            const dob = document.getElementById('dob').value;
+            const dob = document.getElementById('dob').value; // Ye automatic YYYY-MM-DD format mein jayega
 
             if(!name || !roll || !dob) return alert("Kripya saari details bharein!");
             
+            // Ye data result-card.html ko bheja ja raha hai
             window.location.href = `result-card.html?roll=${roll}&name=${encodeURIComponent(name)}&dob=${dob}&type=${type}&month=${month}&class=${cls}`;
         }
     </script>

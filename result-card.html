@@ -1,146 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Report Card - Madarsa Arabia Noorul Uloom</title>
+    <title>Madarsa Result Portal</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        :root { --primary: #1e5631; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #ddd; padding: 20px; margin: 0; }
-        #card { width: 850px; margin: auto; background: white; border: 10px double var(--primary); padding: 40px; box-shadow: 0 0 20px rgba(0,0,0,0.2); position: relative; }
-        .header { text-align: center; border-bottom: 2px solid var(--primary); margin-bottom: 20px; padding-bottom: 10px; }
-        .school-name { font-size: 32px; font-weight: bold; color: var(--primary); margin: 0; }
-        .exam-tag { background: var(--primary); color: white; padding: 8px 25px; border-radius: 50px; font-weight: bold; display: inline-block; margin: 15px 0; }
-        
-        .student-info { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; border: 1px solid #eee; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 15px; }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid var(--primary); padding: 10px; text-align: center; }
-        th { background: #f2f2f2; }
-        
-        .summary { display: flex; justify-content: space-between; margin-top: 20px; font-weight: bold; background: #e8f5e9; padding: 15px; border-radius: 8px; border: 1px solid var(--primary); }
-        .footer-sigs { display: flex; justify-content: space-between; margin-top: 60px; font-weight: bold; }
-        
-        @media print { .print-btn { display: none; } body { background: white; padding: 0; } #card { box-shadow: none; border: 5px solid var(--primary); } }
+        /* Yahan wahi CSS daalein jo aapne image mein banayi hai */
+        .card-container { width: 800px; margin: auto; border: 2px solid green; padding: 20px; font-family: sans-serif; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+        .header { text-align: center; color: blue; }
+        .search-box { margin-bottom: 20px; text-align: center; background: #f4f4f4; padding: 20px; }
     </style>
 </head>
 <body>
 
-<div id="card">
-    <div class="header">
-        <h1 class="school-name">MADARSA ARABIA NOORUL ULOOM</h1>
-        <p style="margin: 5px 0;">Karma Khan, Sant Kabir Nagar (U.P.)</p>
-        <div class="exam-tag" id="examHeading">ANNUAL REPORT CARD</div>
-    </div>
-
-    <div class="student-info">
-        <div>Roll No: <span id="sroll">...</span></div>
-        <div>Class: <span id="sclass">...</span></div>
-        <div>Student Name: <span id="sname">...</span></div>
-        <div>D.O.B: <span id="sdob">...</span></div>
-        <div>Father's Name: <span id="sfname">...</span></div>
-        <div>Mother's Name: <span id="smname">...</span></div>
-        <div style="grid-column: span 2;">Address: <span id="saddress">...</span></div>
-    </div>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Subject Name</th>
-                <th>Maximum Marks</th>
-                <th>Obtained Marks</th>
-            </tr>
-        </thead>
-        <tbody id="markSheet">
-            </tbody>
-        <tfoot>
-            <tr style="font-weight: bold;">
-                <td>TOTAL</td>
-                <td>1000</td>
-                <td id="totalObt">0</td>
-            </tr>
-        </tfoot>
-    </table>
-
-    <div class="summary">
-        <div>Percentage: <span id="percent">0%</span></div>
-        <div>Attendance: <span id="sattnd">0%</span></div>
-        <div>Result: <span id="status">...</span></div>
-    </div>
-
-    <div class="footer-sigs">
-        <div>Parent's Signature</div>
-        <div>Class Teacher</div>
-        <div>Principal Seal & Sig.</div>
-    </div>
+<div class="search-box">
+    <input type="text" id="rollInput" placeholder="Enter Roll Number">
+    <select id="examInput">
+        <option value="Yearly">Yearly</option>
+        <option value="Half-Yearly">Half-Yearly</option>
+    </select>
+    <button onclick="fetchResult()">Search Result</button>
 </div>
 
-<div style="text-align: center; margin-top: 20px;" class="print-btn">
-    <button onclick="window.print()" style="padding: 10px 30px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Download / Print PDF</button>
+<div id="printArea" style="display:none;">
+    <div class="card-container">
+        <div class="header">
+            <h2>MADARSA ARABIA NOORUL ULOOM</h2>
+            <p>Karma Khan, Sant Kabir Nagar (U.P.)</p>
+            <h3>Report Card (<span id="resYearly"></span>) - 2026</h3>
+        </div>
+
+        <p>Name: <b id="resName"></b> | Father: <b id="resFather"></b></p>
+        <p>Class: <b id="resClass"></b> | Roll No: <b id="resRoll"></b></p>
+
+        <table>
+            <tr style="background:#ffffcc;"><th>Subject</th><th>Max</th><th>Obtained</th></tr>
+            <tr><td>Quran</td><td>100</td><td id="m1"></td></tr>
+            <tr><td>Hifz</td><td>100</td><td id="m2"></td></tr>
+            <tr style="background:#e6f3ff;"><td>Total</td><td>1000</td><td id="resTotal"></td></tr>
+        </table>
+        
+        <div style="margin-top:20px; text-align:center;">
+            <button onclick="downloadPDF()" style="background:red; color:white;">Download PDF</button>
+        </div>
+    </div>
 </div>
 
 <script>
-    window.onload = function() {
-        const p = new URLSearchParams(window.location.search);
-        // Dashboard se data lena
-        const roll = p.get('roll');
-        const name = p.get('name');
-        const dob = p.get('dob');
-        const type = p.get('type');
-        const cls = p.get('class');
+    const scriptURL = 'APNA_APPS_SCRIPT_URL_YAHAN_PASTE_KAREIN';
 
-        document.getElementById('examHeading').innerText = type.toUpperCase() + " EXAMINATION";
-        loadStudentData(roll, name, dob, type, cls);
-    };
+    function fetchResult() {
+        let roll = document.getElementById('rollInput').value;
+        let exam = document.getElementById('examInput').value;
 
-    async function loadStudentData(roll, name, dob, type, cls) {
-        // !!! APNI GOOGLE SHEET KA CSV LINK YAHAN DALEIN !!!
-        const sheetUrl = 'https://script.google.com/macros/s/AKfycbyMSAa6bN3VqiP7j4KNTvbKTOQ5j91GKrQ6qBs0dD99fV2zxR52dshOvRmp_ZB2JRvx/exec';
+        fetch(`${scriptURL}?rollNo=${roll}&examType=${exam}`)
+        .then(res => res.json())
+        .then(data => {
+            if(data == "Not Found") { alert("Result nahi mila!"); return; }
+            
+            document.getElementById('printArea').style.display = 'block';
+            document.getElementById('resName').innerText = data[1];
+            document.getElementById('resFather').innerText = data[2];
+            document.getElementById('resRoll').innerText = data[0];
+            document.getElementById('m1').innerText = data[8]; // Quran
+            document.getElementById('m2').innerText = data[9]; // Hifz
+            document.getElementById('resTotal').innerText = data[18];
+        });
+    }
 
-        try {
-            const res = await fetch(sheetUrl);
-            const text = await res.text();
-            const rows = text.split('\n').map(r => r.split(','));
-
-            // Data matching as per Admin Panel sequence
-            const student = rows.find(r => 
-                r[0].trim() === roll.trim() && 
-                r[1].trim().toLowerCase() === name.toLowerCase().trim() &&
-                r[15].trim() === dob.trim()
-            );
-
-            if (student) {
-                document.getElementById('sroll').innerText = student[0];
-                document.getElementById('sname').innerText = student[1];
-                document.getElementById('sfname').innerText = student[2];
-                document.getElementById('smname').innerText = student[3];
-                document.getElementById('sclass').innerText = student[4];
-                document.getElementById('sdob').innerText = student[15];
-                document.getElementById('sattnd').innerText = student[16] + "%";
-                document.getElementById('saddress').innerText = student[17];
-
-                const subjects = ["Quran (Nazra)", "Hifz", "Deeniyat", "Urdu", "English", "Hindi", "Science", "S. Science", "Mathematics", "Dua & Kalma"];
-                let total = 0;
-                let html = "";
-
-                // Marks start from column index 5 to 14
-                for (let i = 0; i < 10; i++) {
-                    let m = parseInt(student[5 + i]) || 0;
-                    total += m;
-                    html += `<tr><td>${subjects[i]}</td><td>100</td><td>${m}</td></tr>`;
-                }
-
-                document.getElementById('markSheet').innerHTML = html;
-                document.getElementById('totalObt').innerText = total;
-                
-                let percentage = (total / 10).toFixed(2);
-                document.getElementById('percent').innerText = percentage + "%";
-                
-                const status = document.getElementById('status');
-                status.innerText = percentage >= 33 ? "PASSED" : "FAILED";
-                status.style.color = percentage >= 33 ? "green" : "red";
-
-            } else {
+    function downloadPDF() {
+        const element = document.getElementById('printArea');
+        html2pdf().from(element).save('Result.pdf');
+    }
+</script>
+</body>
+</html>
                 alert("No record found! Please check your details.");
                 window.location.href = "index.html";
             }

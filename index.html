@@ -1,140 +1,80 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Result Portal - Madarsa Arabia Noorul Uloom</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <title>Madrasa Result Portal</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #1e5631, #a4be7b); margin: 0; padding: 20px; color: #333; }
-        .search-card { background: white; max-width: 450px; margin: 50px auto; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center; }
-        input { width: 90%; padding: 12px; margin: 10px 0; border: 2px solid #1e5631; border-radius: 8px; font-size: 16px; }
-        .btn { background: #1e5631; color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; width: 100%; transition: 0.3s; }
-        .btn:hover { background: #2e7d32; }
-
-        /* Result Card Styling */
-        #result-display { display: none; margin-top: 30px; }
-        #card { width: 900px; margin: auto; background: white; padding: 25px; border: 5px solid #1e5631; position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.3); border-radius: 10px; }
-        #topSpace { background: #FFFDD0; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 20px; border-bottom: 3px solid #1e5631; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1.5px solid #1e5631; padding: 10px; text-align: center; font-weight: bold; }
-        th { background: #FFFDD0; }
-        .info-row { display: flex; justify-content: space-between; margin-bottom: 10px; color: #1e5631; font-size: 18px; }
-        .status-pass { color: green; border: 2px solid green; padding: 5px 20px; border-radius: 5px; }
-        .status-fail { color: red; border: 2px solid red; padding: 5px 20px; border-radius: 5px; }
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; text-align: center; padding: 20px; }
+        .container { background: white; max-width: 500px; margin: auto; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); }
+        input, select { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+        button { background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        #resultCard { display: none; margin-top: 20px; padding: 20px; border: 2px solid #333; background: #fff; text-align: left; }
+        .download-btn { background-color: #007bff; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-<div class="search-card" id="search-box">
-    <h2 style="color: #1e5631;">Madarsa Online Result</h2>
-    <p>Apna Roll No aur DOB (01/01/2010) bharein</p>
-    <input type="text" id="roll" placeholder="Roll Number">
-    <input type="text" id="dob" placeholder="Date of Birth (DD/MM/YYYY)">
-    <button class="btn" onclick="fetchResult()">Show Result Card</button>
-</div>
+<div class="container">
+    <h2>Madrasa Result Portal</h2>
+    <p>Apni details bharein:</p>
+    <input type="text" id="rollNo" placeholder="Roll Number">
+    <select id="className">
+        <option value="">Class Chunein</option>
+        <option value="1">Class 1</option>
+        <option value="2">Class 2</option>
+        </select>
+    <button onclick="fetchResult()">Result Dekhein</button>
 
-<div id="result-display">
-    <div id="card">
-        <div id="topSpace">
-            <h1 style="color:#0000FF; margin:0; font-size: 35px;">MADARSA ARABIA NOORUL ULOOM</h1>
-            <p style="font-size: 20px; color: #0000FF;">Karma Khan, Distt: Sant Kabir Nagar (U.P.)</p>
-            <div style="font-size: 22px; background: white; display: inline-block; padding: 5px 30px; border-radius: 20px; border: 1px solid #1e5631; margin-top: 10px;">Yearly Result Card - 2026</div>
+    <div id="resultCard">
+        <div id="printArea">
+            <h3 style="text-align:center;">OFFICIAL RESULT CARD</h3>
+            <hr>
+            <p><strong>Naam:</strong> <span id="resName"></span></p>
+            <p><strong>Walid ka Naam:</strong> <span id="resFather"></span></p>
+            <p><strong>Roll No:</strong> <span id="resRoll"></span></p>
+            <p><strong>Class:</strong> <span id="resClass"></span></p>
+            <p><strong>Exam Type:</strong> <span id="resExam"></span></p>
+            <p><strong>Year:</strong> <span id="resYear"></span></p>
+            <p><strong>Kul Number:</strong> <span id="resMarks"></span></p>
         </div>
-
-        <div class="info-row">
-            <div>Student: <span id="res-name"></span></div>
-            <div>Roll No: <span id="res-roll"></span></div>
-        </div>
-        <div class="info-row">
-            <div>Father: <span id="res-father"></span></div>
-            <div>Class: <span id="res-class"></span></div>
-        </div>
-
-        <table id="marksTable">
-            <thead>
-                <tr><th>Subject</th><th>Max</th><th>Obtained</th></tr>
-            </thead>
-            <tbody id="res-body"></tbody>
-            <tfoot>
-                <tr style="background: #f9fff9;"><th>Total</th><th>1000</th><th id="res-total"></th></tr>
-                <tr style="background: #f9fff9;"><th>Percentage</th><th colspan="2" id="res-percent"></th></tr>
-            </tfoot>
-        </table>
-
-        <div style="text-align: center; margin-top: 30px; font-size: 24px;">
-            RESULT: <span id="res-status"></span>
-        </div>
-
-        <div style="display: flex; justify-content: space-between; margin-top: 50px; color: #1e5631;">
-            <div>Principal Signature: ________________</div>
-            <div>Stamp: ________________</div>
-        </div>
-    </div>
-    <div style="text-align: center; margin-top: 20px;">
-        <button class="btn" onclick="downloadPDF()" style="width: 250px; background: #c0392b;">Download PDF</button>
-        <button class="btn" onclick="location.reload()" style="width: 250px; background: #7f8c8d;">Search Another</button>
+        <button class="download-btn" onclick="downloadPDF()">Download Result (PDF)</button>
     </div>
 </div>
 
 <script>
-    // 1. Apna Google Apps Script URL yahan daalein
-    const SCRIPT_URL = "APNA_SCRIPT_URL_YAHAN_DAALEIN";
+    function fetchResult() {
+        const rollNo = document.getElementById('rollNo').value;
+        const className = document.getElementById('className').value;
+        const scriptURL = "https://script.google.com/macros/s/AKfycbwpQXVEwSpUyKj2ndhLSDrci6iPuDJ8jIUV2f2Y1gStZhLNEKpJyA6NQl2ieYxwNy6row/exec";
 
-    const subjects = ["Quran","Hifz","Deeniyat","Urdu","English","Hindi","Science","Social Science","Math","Dua & Kalma"];
-    const colors = ["#e3f2fd", "#fce4ec", "#e8f5e9", "#fff3e0", "#f3e5f5", "#efebe9", "#e0f2f1", "#fffde7", "#f9fbe7", "#e1f5fe"];
+        if(!rollNo || !className) { alert("Sari details bharein!"); return; }
 
-    async function fetchResult() {
-        const roll = document.getElementById('roll').value;
-        const dob = document.getElementById('dob').value;
-        if(!roll || !dob) { alert("Details bharein!"); return; }
-
-        document.getElementById('search-box').innerHTML = "<h2>Loading...</h2>";
-
-        try {
-            const response = await fetch(`${SCRIPT_URL}?roll=${roll}&dob=${dob}`);
-            const s = await response.json();
-
-            if(s === "not_found") {
-                alert("Record nahi mila!");
-                location.reload();
-                return;
+        fetch(`${scriptURL}?rollNo=${rollNo}&className=${className}`)
+        .then(response => response.json())
+        .then(data => {
+            if(data) {
+                document.getElementById('resName').innerText = data.name;
+                document.getElementById('resFather').innerText = data.father;
+                document.getElementById('resRoll').innerText = data.rollNo;
+                document.getElementById('resClass').innerText = data.class;
+                document.getElementById('resExam').innerText = data.examType;
+                document.getElementById('resYear').innerText = data.year;
+                document.getElementById('resMarks').innerText = data.marks;
+                document.getElementById('resultCard').style.display = 'block';
+            } else {
+                alert("Result nahi mila. Roll No check karein.");
             }
-
-            // Fill Info
-            document.getElementById('res-name').innerText = s.name;
-            document.getElementById('res-roll').innerText = s.roll;
-            document.getElementById('res-father').innerText = s.father;
-            document.getElementById('res-class').innerText = s.class;
-            document.getElementById('res-total').innerText = s.total;
-            document.getElementById('res-percent').innerText = s.percent + "%";
-            document.getElementById('res-status').innerText = s.status;
-            document.getElementById('res-status').className = s.status === "PASS" ? "status-pass" : "status-fail";
-
-            // Fill Subjects
-            let html = "";
-            subjects.forEach((sub, i) => {
-                html += `<tr style="background: ${colors[i]}"><td>${sub}</td><td>100</td><td>${s.marks[i]}</td></tr>`;
-            });
-            document.getElementById('res-body').innerHTML = html;
-
-            document.getElementById('search-box').style.display = "none";
-            document.getElementById('result-display').style.display = "block";
-        } catch (e) {
-            alert("Error! Check internet or URL.");
-            location.reload();
-        }
+        })
+        .catch(error => alert("Error: " + error));
     }
 
-    async function downloadPDF() {
-        const { jsPDF } = window.jspdf;
-        const canvas = await html2canvas(document.querySelector("#card"), { scale: 2 });
-        const imgData = canvas.toDataURL('image/jpeg', 1.0);
-        const pdf = new jsPDF("p", "mm", "a4");
-        pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
-        pdf.save("Result_Card.pdf");
+    function downloadPDF() {
+        const element = document.getElementById('printArea');
+        html2pdf().from(element).save('Result.pdf');
     }
 </script>
+
 </body>
 </html>

@@ -6,38 +6,61 @@
     <title>Madrasa Result Portal</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; text-align: center; padding: 20px; }
-        .container { background: white; max-width: 500px; margin: auto; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); }
-        input, select { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
-        button { background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
-        #resultCard { display: none; margin-top: 20px; padding: 20px; border: 2px solid #333; background: #fff; text-align: left; }
-        .download-btn { background-color: #007bff; margin-top: 10px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #eef2f3; padding: 20px; }
+        .container { background: white; max-width: 600px; margin: auto; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; background-color: #27ae60; color: white; padding: 15px; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; transition: 0.3s; }
+        button:hover { background-color: #219150; }
+        #resultCard { display: none; margin-top: 30px; padding: 20px; border: 2px solid #2c3e50; border-radius: 10px; background: #fff; position: relative; }
+        .download-btn { background-color: #2980b9; margin-top: 15px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h2>Madrasa Result Portal</h2>
-    <p>Apni details bharein:</p>
+    <p>Apni details bhar kar result check karein:</p>
+    
+    <input type="text" id="studentName" placeholder="Student Name">
+    <input type="text" id="fatherName" placeholder="Father Name">
     <input type="text" id="rollNo" placeholder="Roll Number">
+    
     <select id="className">
         <option value="">Class Chunein</option>
+        <option value="LKG">LKG</option>
+        <option value="UKG">UKG</option>
         <option value="1">Class 1</option>
         <option value="2">Class 2</option>
-        </select>
+        <option value="3">Class 3</option>
+        <option value="4">Class 4</option>
+        <option value="5">Class 5</option>
+    </select>
+
+    <select id="examType">
+        <option value="">Exam Type Chunein</option>
+        <option value="Monthly">Monthly</option>
+        <option value="Half Yearly">Half Yearly</option>
+        <option value="Yearly">Yearly</option>
+    </select>
+
+    <input type="number" id="year" placeholder="Year (e.g. 2026)" value="2026">
+
     <button onclick="fetchResult()">Result Dekhein</button>
 
     <div id="resultCard">
         <div id="printArea">
-            <h3 style="text-align:center;">OFFICIAL RESULT CARD</h3>
+            <h2 style="text-align:center; color:#2c3e50;">MADRASA OFFICIAL RESULT</h2>
             <hr>
-            <p><strong>Naam:</strong> <span id="resName"></span></p>
-            <p><strong>Walid ka Naam:</strong> <span id="resFather"></span></p>
-            <p><strong>Roll No:</strong> <span id="resRoll"></span></p>
-            <p><strong>Class:</strong> <span id="resClass"></span></p>
-            <p><strong>Exam Type:</strong> <span id="resExam"></span></p>
-            <p><strong>Year:</strong> <span id="resYear"></span></p>
-            <p><strong>Kul Number:</strong> <span id="resMarks"></span></p>
+            <table style="width:100%; line-height: 2;">
+                <tr><td><strong>Student Name:</strong></td><td id="resName"></td></tr>
+                <tr><td><strong>Father Name:</strong></td><td id="resFather"></td></tr>
+                <tr><td><strong>Roll No:</strong></td><td id="resRoll"></td></tr>
+                <tr><td><strong>Class:</strong></td><td id="resClass"></td></tr>
+                <tr><td><strong>Exam Type:</strong></td><td id="resExam"></td></tr>
+                <tr><td><strong>Year:</strong></td><td id="resYear"></td></tr>
+                <tr style="font-size: 20px; color: #c0392b;"><td><strong>Total Marks:</strong></td><td id="resMarks"></td></tr>
+            </table>
         </div>
         <button class="download-btn" onclick="downloadPDF()">Download Result (PDF)</button>
     </div>
@@ -45,13 +68,25 @@
 
 <script>
     function fetchResult() {
-        const rollNo = document.getElementById('rollNo').value;
-        const className = document.getElementById('className').value;
-        const scriptURL = "https://script.google.com/macros/s/AKfycbwpQXVEwSpUyKj2ndhLSDrci6iPuDJ8jIUV2f2Y1gStZhLNEKpJyA6NQl2ieYxwNy6row/exec";
+        const scriptURL = "https://script.google.com/macros/s/AKfycbwvPniWqnWwUlgJy4Rw_CDrhMSPXuOfBmT7-5T835S_IirN65nOFnPVIXZAMySanB6UbQ/exec";
+        
+        const params = {
+            studentName: document.getElementById('studentName').value,
+            fatherName: document.getElementById('fatherName').value,
+            rollNo: document.getElementById('rollNo').value,
+            className: document.getElementById('className').value,
+            examType: document.getElementById('examType').value,
+            year: document.getElementById('year').value
+        };
 
-        if(!rollNo || !className) { alert("Sari details bharein!"); return; }
+        if(!params.studentName || !params.rollNo || !params.className || !params.examType) {
+            alert("Kripya saari jankari sahi se bharein!");
+            return;
+        }
 
-        fetch(`${scriptURL}?rollNo=${rollNo}&className=${className}`)
+        const queryString = new URLSearchParams(params).toString();
+
+        fetch(`${scriptURL}?${queryString}`)
         .then(response => response.json())
         .then(data => {
             if(data) {
@@ -64,15 +99,22 @@
                 document.getElementById('resMarks').innerText = data.marks;
                 document.getElementById('resultCard').style.display = 'block';
             } else {
-                alert("Result nahi mila. Roll No check karein.");
+                alert("Koi result nahi mila. Please details check karein.");
             }
         })
-        .catch(error => alert("Error: " + error));
+        .catch(error => alert("Server error! Connection check karein."));
     }
 
     function downloadPDF() {
         const element = document.getElementById('printArea');
-        html2pdf().from(element).save('Result.pdf');
+        const opt = {
+            margin: 1,
+            filename: 'Result_Card.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
     }
 </script>
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Madrasa Arabia Noorul Uloom</title>
+    <title>Madrasa Result Portal</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f7f6; padding: 15px; text-align: center; }
@@ -42,7 +42,7 @@
             <p><strong>Mother:</strong> <span id="rMother"></span></p>
             <p><strong>Roll No:</strong> <span id="rRoll"></span></p>
             <p><strong>Class:</strong> <span id="rCls"></span></p>
-            <p style="font-size:18px; color:green;"><strong>Result:</strong> PASSED</p>
+            <p style="font-size:18px; color:green;"><strong>Status:</strong> PASSED</p>
         </div>
         <button style="background:#2980b9;" onclick="savePDF()">DOWNLOAD PDF</button>
     </div>
@@ -51,7 +51,7 @@
 <script>
     function getResult() {
         // Yahan apna naya Web App URL paste karein
-        const url = "https://script.google.com/macros/s/AKfycbzpR6aKDHfG8lRwYVMCMZiVjh8k0uLdlIF3Bd2UyCWe41oM9uYNzKrmsjldZFy7Y03aFw/exec";
+        const url = "APNA_NEW_WEB_APP_URL_YAHAN_DAALEIN";
         
         const data = {
             studentName: document.getElementById('sName').value.toUpperCase().trim(),
@@ -62,7 +62,7 @@
         };
 
         if(!data.studentName || !data.rollNo || !data.className) {
-            alert("Sari jankari bharein!"); return;
+            alert("Sari details bharein!"); return;
         }
 
         fetch(`${url}?${new URLSearchParams(data).toString()}`)
@@ -76,10 +76,10 @@
                 document.getElementById('rCls').innerText = "Class " + res.class;
                 document.getElementById('resultArea').style.display = 'block';
             } else {
-                alert("Data match nahi hua! Spelling check karein (Sheet mein MOHAMMAD YUNUS hai)");
+                alert("Data match nahi hua! Sheet mein spelling check karein.");
             }
         })
-        .catch(err => alert("Connection Error! Check if Web App is public."));
+        .catch(err => alert("Connection Error! Deploy Web App as 'Anyone'."));
     }
 
     function savePDF() {

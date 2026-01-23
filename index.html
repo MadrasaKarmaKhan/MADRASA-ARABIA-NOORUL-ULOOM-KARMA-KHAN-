@@ -25,15 +25,13 @@
     <input type="text" id="roll" placeholder="Roll Number">
     
     <select id="cls">
-        <option value="">--Select Class--</option>
-        <option value="LKG">LKG</option>
-        <option value="UKG">UKG</option>
-        <option value="1">Class 1</option>
-        <option value="2">Class 2</option>
-        <option value="3">Class 3</option>
-        <option value="4">Class 4</option>
-        <option value="5">Class 5</option>
-    </select>
+    <option value="">--Select Class--</option>
+    <option value="1">Class 1</option>
+    <option value="2">Class 2</option>
+    <option value="3">Class 3</option>
+    <option value="4">Class 4</option>
+    <option value="5">Class 5</option>
+</select>
 
     <button onclick="getResult()">SEARCH RESULT</button>
 
@@ -54,7 +52,7 @@
 
 <script>
     function getResult() {
-        const url = "https://script.google.com/macros/s/AKfycbzVDXehKoeWn-tZrPcPV4kSibiw3zzdXMKokK-UP5Lu7w-NZyZBQhLn9iGuyQcwk3NekA/exec";
+        const url = "https://script.google.com/macros/s/AKfycbyJMqTUpdNtqqZy-P5m_rhHNxjhLjUORWFUkXYu4bEO7jGTs4Fj5cL7KnTmDEkBhhItzQ/exec";
         const data = {
             studentName: document.getElementById('sName').value,
             fatherName: document.getElementById('fName').value,
